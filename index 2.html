@@ -1,0 +1,1945 @@
+<!doctype html><html lang="ru"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>ЯВЬ™ · Экспресс-аудит корпоративной культуры</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* ============================================================
+   ЯВЬ™ — design tokens
+   Концепция: "выход из тени в свет" (явь vs навь).
+   Глубокий графит-индиго как навь, тёплое золото как проявление.
+   Display: Cormorant (засечный, дыхание смысла) — used with restraint.
+   Body: 'Inter' fallback system. Data/utility: ui-monospace.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --ink:#0E1320;          /* навь — глубокая база */
+  --ink-2:#161C2E;
+  --ink-3:#1F273C;
+  --indigo:#1A2B5A;
+  --gold:#C5973A;         /* явь — проявленный свет */
+  --gold-soft:#E3C079;
+  --paper:#FFFFFF;
+  --paper-2:#F5F7FA;
+  --line:#E4E8F0;
+  --line-dark:#2A3450;
+  --text:#1B2233;
+  --text-soft:#5A6478;
+  --text-dim:#8A92A6;
+  /* ось-светофор: режимы, не оценка */
+  --c1:#E53935;  /* подавление */
+  --c2:#FFA726;  /* игнорирование */
+  --c3:#43A047;  /* утилизация */
+  --c4:#1565C0;  /* раскрытие */
+  --star:#E3C079;
+  --shadow:0 18px 50px -24px rgba(10,16,34,.55);
+  --radius:14px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--text);
+  background:var(--paper-2);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.55;
+}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.serif{font-family:'Cormorant',Georgia,serif}
+
+/* ---------- App shell ---------- */
+.wrap{max-width:880px;margin:0 auto;padding-left:max(22px,env(safe-area-inset-left,0px));padding-right:max(22px,env(safe-area-inset-right,0px))}
+[hidden]{display:none!important}
+.screen{display:none}
+.screen.active{display:block;animation:fade .5s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- Top bar (progress) ---------- */
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:30;
+  background:rgba(14,19,32,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-dark);
+  color:#fff;
+}
+.topbar .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:baseline;gap:10px;font-weight:700;letter-spacing:.04em}
+.brand .mark{
+  font-family:'Cormorant',serif;font-size:26px;font-weight:700;
+  color:var(--gold);line-height:1
+}
+.brand .tm{font-size:10px;color:var(--text-dim);transform:translateY(-6px)}
+.brand small{font-weight:500;font-size:11px;color:var(--text-dim);letter-spacing:.14em;text-transform:uppercase}
+.prog{flex:1;display:flex;align-items:center;gap:12px}
+.prog-track{flex:1;height:4px;background:#2A3450;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width .4s ease}
+.prog-label{font-size:11px;color:var(--text-dim);white-space:nowrap;letter-spacing:.05em}
+
+/* ---------- Cover ---------- */
+.cover{
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(197,151,58,.18), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(26,43,90,.55), transparent 55%),
+    var(--ink);
+  color:#EAEEF6;min-height:100vh;display:flex;align-items:center;
+  position:relative;overflow:hidden
+}
+.cover::after{
+  /* созвездие — точки-звёзды */
+  content:"";position:absolute;inset:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(227,192,121,.9), transparent),
+    radial-gradient(1.5px 1.5px at 70% 20%, rgba(227,192,121,.7), transparent),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1.5px 1.5px at 85% 65%, rgba(227,192,121,.6), transparent),
+    radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1px 1px at 12% 80%, rgba(227,192,121,.5), transparent);
+  opacity:.7;pointer-events:none
+}
+.cover .wrap{position:relative;z-index:2;padding-top:54px;padding-bottom:54px}
+.eyebrow{
+  font-size:12px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:22px
+}
+.cover h1{
+  font-family:'Cormorant',serif;font-weight:600;
+  font-size:clamp(42px,7vw,72px);line-height:1.02;margin:0 0 8px;
+  letter-spacing:-.01em
+}
+.cover h1 .yav{color:var(--gold)}
+.cover .sub{font-size:clamp(17px,2.4vw,21px);color:#C2CADC;max-width:600px;font-weight:400;margin-bottom:30px}
+.axes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:36px 0 30px;max-width:680px}
+.axis-card{
+  border:1px solid var(--line-dark);border-radius:12px;padding:16px 16px 18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),transparent)
+}
+.axis-card .glyph{font-family:'Cormorant',serif;font-size:30px;color:var(--gold);line-height:1}
+.axis-card h3{margin:8px 0 4px;font-size:14px;letter-spacing:.02em}
+.axis-card p{margin:0;font-size:12.5px;color:var(--text-dim);line-height:1.45}
+.pitch{
+  border-left:2px solid var(--gold);padding:6px 0 6px 20px;margin:30px 0 34px;
+  font-family:'Cormorant',serif;font-size:21px;line-height:1.4;color:#D7DEEC;max-width:640px;font-weight:500
+}
+.meta-row{display:flex;flex-wrap:wrap;gap:26px;margin-bottom:34px;font-size:13px;color:var(--text-dim)}
+.meta-row b{color:#EAEEF6;font-weight:600;display:block;font-size:19px;font-family:'Cormorant',serif}
+
+/* ---------- Buttons ---------- */
+.btn{
+  appearance:none;border:0;cursor:pointer;font-family:inherit;font-weight:600;
+  font-size:15px;padding:14px 26px;border-radius:11px;transition:.18s;
+  display:inline-flex;align-items:center;gap:10px;letter-spacing:.01em
+}
+.btn-gold{background:var(--gold);color:#1a1306}
+.btn-gold:hover{background:var(--gold-soft);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:#EAEEF6;border:1px solid var(--line-dark)}
+.btn-ghost:hover{border-color:var(--gold);color:#fff}
+.btn-outline{background:#fff;color:var(--indigo);border:1px solid var(--line)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn:focus-visible{outline:3px solid var(--gold-soft);outline-offset:2px}
+
+/* ---------- Block intro card ---------- */
+.block-head{padding:42px 0 8px}
+.block-kicker{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700
+}
+.block-kicker .n{
+  font-family:'Cormorant',serif;font-size:34px;color:var(--indigo);font-weight:700;letter-spacing:0
+}
+.block-head h2{
+  font-family:'Cormorant',serif;font-weight:600;font-size:clamp(28px,4.4vw,40px);
+  margin:6px 0 12px;color:var(--ink);line-height:1.08
+}
+.block-intro{
+  background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--gold);
+  border-radius:12px;padding:18px 20px;margin:10px 0 4px;box-shadow:var(--shadow)
+}
+.block-intro p{margin:0;color:var(--text-soft);font-size:14.5px}
+.block-intro .facts{display:flex;gap:22px;margin-top:12px;flex-wrap:wrap;font-size:12.5px;color:var(--text-dim)}
+.block-intro .facts span{display:inline-flex;align-items:center;gap:6px}
+.block-intro .facts b{color:var(--indigo)}
+.diag-tag{font-size:12px;color:var(--text-dim);font-style:italic;margin-top:10px}
+
+/* ---------- Questions ---------- */
+.q{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 22px 8px;margin:16px 0;box-shadow:var(--shadow)
+}
+.q.unanswered-flag{border-color:#f0c8c8}
+.q-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:6px}
+.q-num{
+  font-family:'Cormorant',serif;font-weight:700;color:var(--gold);
+  font-size:22px;line-height:1;min-width:30px
+}
+.q-text{font-size:15.5px;font-weight:600;color:var(--ink);line-height:1.4}
+.q-hint{font-size:12.5px;color:var(--text-dim);font-style:italic;margin:2px 0 12px 44px}
+.opts{display:flex;flex-direction:column;gap:9px;margin:6px 0 14px}
+.opt{
+  display:flex;gap:12px;align-items:flex-start;cursor:pointer;
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;transition:.14s;background:#fff
+}
+.opt:hover{border-color:var(--gold-soft);background:#FFFDF8}
+.opt input{margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex:none}
+.opt .ot{font-size:14px;color:var(--text);line-height:1.4}
+.opt.sel{border-color:var(--gold);background:#FFF8EA;box-shadow:inset 0 0 0 1px var(--gold)}
+.opt .axistag{
+  margin-left:auto;font-size:10px;letter-spacing:.08em;color:var(--text-dim);
+  border:1px solid var(--line);border-radius:6px;padding:2px 6px;white-space:nowrap;align-self:center
+}
+.scale-row{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 16px}
+.scale-row .opt{flex:1;min-width:120px;flex-direction:column;text-align:center;align-items:center;gap:6px}
+.scale-row .opt input{margin:0}
+
+/* select / text inputs for context block */
+.field{margin:6px 0 14px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.field select,.field input[type=text]{
+  width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+  font-family:inherit;font-size:14px;color:var(--text);background:#fff
+}
+.field select:focus,.field input:focus{outline:2px solid var(--gold-soft);border-color:var(--gold)}
+
+/* block footer reminder + nav */
+.block-foot{
+  background:linear-gradient(180deg,#fff,#FBFCFE);border:1px dashed var(--line);
+  border-radius:12px;padding:14px 18px;margin:18px 0 8px;font-size:13px;color:var(--text-soft)
+}
+.block-foot b{color:var(--indigo)}
+.nav{display:flex;justify-content:space-between;gap:12px;padding:18px 0 56px}
+.nav .right{display:flex;gap:10px;align-items:center}
+.nav .count{font-size:12.5px;color:var(--text-dim)}
+
+/* respondent chip */
+.resp-bar{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:20px 0 0
+}
+.resp-bar .who{font-size:13px;color:var(--text-soft)}
+.resp-bar .who b{color:var(--indigo)}
+.chip{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:5px 12px;color:var(--text-soft);background:#FAFBFD}
+
+footer.legal{
+  background:var(--ink);color:var(--text-dim);font-size:11.5px;line-height:1.6;
+  padding:26px 0;border-top:1px solid var(--line-dark)
+}
+footer.legal .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer.legal b{color:var(--gold-soft)}
+
+@media (max-width:640px){
+  .axes{grid-template-columns:1fr}
+  .topbar .brand small{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ============================================================
+   REPORT styles
+   ============================================================ */
+.rep-controls{display:flex;justify-content:space-between;gap:12px;padding:24px 0 8px;flex-wrap:wrap}
+.report{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:60px}
+
+.rep-cover{
+  background:
+    radial-gradient(900px 400px at 85% -20%, rgba(197,151,58,.20), transparent 60%),
+    radial-gradient(700px 500px at -10% 120%, rgba(26,43,90,.6), transparent 55%),
+    var(--ink);
+  color:#EAEEF6;padding:46px 44px 40px;position:relative
+}
+.rep-cover-mark{font-size:18px;color:var(--gold);font-weight:700;letter-spacing:.04em;margin-bottom:20px}
+.rep-cover-mark sup{font-size:9px;color:var(--text-dim)}
+.rep-eyebrow{font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
+.rep-cover h1{font-weight:600;font-size:clamp(32px,5vw,52px);margin:0 0 8px;line-height:1.04;letter-spacing:-.01em}
+.rep-context{color:#AEB7CC;font-size:14px;margin-bottom:28px}
+
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 24px}
+.sum-card{border:1px solid var(--line-dark);border-radius:12px;padding:16px 18px;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent)}
+.sum-card.pci{border-color:rgba(197,151,58,.5);background:linear-gradient(180deg,rgba(197,151,58,.10),transparent)}
+.sum-k{font-size:11px;letter-spacing:.04em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;line-height:1.3}
+.sum-v{font-size:34px;font-weight:700;line-height:1;color:#fff}
+.sum-v.mono,.sum-card .mono{font-family:ui-monospace,monospace}
+.sum-v small{font-size:15px;color:var(--text-dim);font-weight:500}
+.sum-sub{font-size:11.5px;color:var(--text-dim);margin-top:7px}
+
+.verdict{font-size:15px;line-height:1.55;color:#D7DEEC;border-left:2px solid var(--gold);padding-left:16px;margin:4px 0 22px}
+.verdict b{color:#fff}
+.here-there{display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#C2CADC}
+.here-there b{color:#EAEEF6}
+.here-there .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:9px;vertical-align:middle}
+.dot.here{background:var(--gold)}.dot.drift{background:var(--c1)}.dot.goal{background:var(--c4)}
+.warn{margin-top:20px;background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.4);border-radius:10px;padding:12px 16px;font-size:13px;color:#FFD9D7}
+.warn b{color:#fff}
+
+.rep-sec{padding:36px 44px;border-top:1px solid var(--line)}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-n{font-family:'Cormorant',serif;font-size:30px;font-weight:700;color:var(--gold)}
+.sec-h h2{font-family:'Cormorant',serif;font-weight:600;font-size:clamp(24px,3.4vw,32px);margin:0;color:var(--ink)}
+.sec-lead{color:var(--text-soft);font-size:14px;max-width:680px;margin:6px 0 18px}
+.sec-lead b{color:var(--indigo)}
+
+.viz-card{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;justify-content:center}
+.viz{width:100%;height:auto;max-width:760px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--text-soft)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.disp-note{margin-top:12px;font-size:13px;color:var(--text-soft)}.disp-note b{color:var(--indigo)}
+.disp-table{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13px}
+.dt-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:8px 14px;border-bottom:1px solid var(--line)}
+.dt-row:last-child{border-bottom:0}
+.dt-row span{text-align:center}.dt-row span:first-child{text-align:left}
+.dt-head{background:var(--paper-2);font-weight:700;color:var(--indigo);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
+.dt-row .sd-hot{color:var(--c1);font-weight:700}
+.pci-penalty{background:rgba(255,167,38,.14);border:1px solid rgba(255,167,38,.5);border-radius:10px;padding:12px 16px;font-size:13px;color:#FFE0B2;margin:14px 0 4px;line-height:1.5}
+.pci-penalty b{color:#fff}
+
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.type-col{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff}
+.type-col h4{margin:0 0 10px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--indigo)}
+.type-col p{margin:0;font-size:13.5px;color:var(--text);line-height:1.5}
+.type-col.good{border-left:3px solid var(--c3)}
+.type-col.bad{border-left:3px solid var(--c1)}
+.type-col.warn-col{border-left:3px solid var(--c2)}
+.ticks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.ticks li{font-size:13.5px;color:var(--text);padding-left:22px;position:relative;line-height:1.4}
+.ticks li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-weight:700}
+
+.ladder{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.rung{display:flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:11px;padding:13px 16px;background:#fff}
+.rung.done{background:linear-gradient(90deg,rgba(67,160,71,.08),transparent);border-color:rgba(67,160,71,.35)}
+.rung.nextrung{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:#FFFBF2}
+.rung-n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none;background:var(--paper-2);color:var(--text-soft)}
+.rung.done .rung-n{background:var(--c3);color:#fff}
+.rung.nextrung .rung-n{background:var(--gold);color:#1a1306}
+.rung-name{font-size:14.5px;font-weight:600;color:var(--ink)}
+.rung-sub{font-size:12px;color:var(--text-dim);margin-top:2px}
+.rung-tag{margin-left:auto;font-size:11px;font-weight:700;color:#a9781f;background:#FFF1D6;border-radius:99px;padding:4px 10px;white-space:nowrap}
+.realism{margin-top:16px;border-radius:11px;padding:14px 18px;font-size:13.5px;line-height:1.55}
+.realism.ok{background:rgba(21,101,192,.07);border:1px solid rgba(21,101,192,.3);color:#0d3c6e}
+.realism.block{background:rgba(255,167,38,.10);border:1px solid rgba(255,167,38,.45);color:#7a4e00}
+
+.horizons{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.horizon{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--paper-2)}
+.hz-head{margin-bottom:12px}
+.hz-when{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}
+.hz-head h4{margin:4px 0 0;font-size:16px;color:var(--ink);font-family:'Cormorant',serif;font-weight:700}
+.hz-item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px}
+.axis-pill{font-size:11px;font-weight:800;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff;flex:none}
+.axis-pill.axis-a{background:var(--indigo)}.axis-pill.axis-b{background:var(--gold);color:#1a1306}.axis-pill.axis-c{background:var(--c4)}
+.hz-task{font-size:13px;color:var(--text);line-height:1.4}
+.hz-kpi{font-size:11px;color:var(--text-dim);margin-top:4px}
+
+.values p{font-size:14px;line-height:1.6;color:var(--text);margin:0 0 14px}
+.values b{color:var(--indigo)}
+.values .conflict{color:#a23a36;font-weight:500}
+.ethics{margin-top:18px;background:var(--ink);color:#C2CADC;border-radius:12px;padding:20px 22px}
+.ethics h4{margin:0 0 12px;color:var(--gold);font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.ethics ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.ethics li{font-size:13px;line-height:1.5}.ethics b{color:#EAEEF6}
+
+.rep-foot{background:var(--paper-2);padding:22px 44px;font-size:11.5px;color:var(--text-dim);line-height:1.6;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.rep-foot b{color:var(--indigo)}
+
+/* ---- SHARE LINK + GROUP ---- */
+.share-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0 0 16px;box-shadow:var(--shadow)}
+.share-box h3{margin:0 0 6px;font-size:15.5px;color:var(--ink)}
+.share-box p{margin:0 0 10px;font-size:13px;color:var(--text-soft);line-height:1.5}
+.share-box a{color:var(--indigo);font-weight:600}
+.share-row{display:flex;gap:10px;flex-wrap:wrap}
+.share-row input{flex:1 1 220px;min-width:0;padding:12px;border:1px solid var(--line);border-radius:10px;font:12.5px ui-monospace,monospace;color:var(--text);background:var(--paper-2)}
+.group-panel{margin-top:26px;max-width:660px;border:1px solid var(--line-dark);border-radius:12px;padding:18px;background:rgba(255,255,255,.03)}
+.group-panel h3{margin:0 0 6px;color:#EAEEF6;font-size:16px}
+.group-panel p{margin:0 0 12px;color:#AEB7CC;font-size:13.5px;line-height:1.5}
+.group-panel textarea{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid var(--line-dark);background:#0B1020;color:#EAEEF6;padding:12px;font:12.5px ui-monospace,monospace;margin-bottom:12px;resize:vertical}
+.group-msg{color:#FFD9D7;font-size:13px;margin-top:10px;min-height:18px}
+
+/* ---- R0 PRIMER + ATLAS ---- */
+.primer{padding:42px 44px 38px;background:linear-gradient(180deg,#fff,#FBFCFE);border-bottom:1px solid var(--line)}
+.primer-mark{font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.04em;margin-bottom:14px}
+.primer-mark sup{font-size:8px;color:var(--text-dim)}
+.primer-h{font-size:clamp(24px,3.6vw,34px);font-weight:600;color:var(--ink);margin:0 0 12px}
+.primer-lead{font-size:14.5px;line-height:1.6;color:var(--text-soft);max-width:720px;margin:0 0 24px}
+.primer-axes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px}
+.pa{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line);border-radius:11px;padding:15px 16px;background:#fff}
+.pa-l{font-family:'Cormorant',serif;font-size:30px;font-weight:700;color:var(--gold);line-height:.9;flex:none}
+.pa b{font-size:14px;color:var(--ink);display:block;margin-bottom:3px}
+.pa p{font-size:12.5px;color:var(--text-soft);margin:0;line-height:1.45}
+.primer-sub{font-size:18px;font-family:'Cormorant',serif;font-weight:700;color:var(--indigo);margin:0 0 6px}
+.primer-note{font-size:12.5px;color:var(--text-dim);font-style:italic;margin:0 0 18px;max-width:720px}
+.primer-note b{color:var(--text-soft)}
+.atlas{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.atlas-card{border:1px solid var(--line);border-left-width:4px;border-radius:11px;padding:15px 17px;background:#fff;position:relative}
+.atlas-card.cl-c1{border-left-color:var(--c1)}
+.atlas-card.cl-c2{border-left-color:var(--c2)}
+.atlas-card.cl-c3{border-left-color:var(--c3)}
+.atlas-card.cl-c4{border-left-color:var(--c4)}
+.atlas-card.cl-x{border-left-color:var(--gold)}
+.atlas-card.is-dom{box-shadow:0 0 0 2px var(--gold);background:#FFFCF5}
+.ac-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ac-name{font-size:19px;font-weight:700;color:var(--ink)}
+.ac-code{font-size:11px;color:var(--text-dim)}
+.ac-cluster{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em;margin:2px 0 8px}
+.ac-ess{font-size:13px;color:var(--text);line-height:1.45;margin:0 0 10px}
+.ac-ro{display:flex;flex-direction:column;gap:5px}
+.ac-opp{font-size:12px;color:#2e7d32;line-height:1.4}
+.ac-risk{font-size:12px;color:#c0392b;line-height:1.4}
+.ac-badge{position:absolute;top:-9px;right:14px;background:var(--gold);color:#1a1306;font-size:10px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.04em}
+.primer-foot{font-size:13px;color:var(--text-soft);line-height:1.55;margin:22px 0 0;padding:14px 18px;background:var(--ink);color:#C2CADC;border-radius:11px}
+.primer-foot b{color:var(--gold-soft)}
+
+/* ---- DEEP NARRATIVE ---- */
+.narrative-sec .narr{font-size:14.5px;line-height:1.66;color:var(--text);margin:0 0 14px;max-width:760px}
+.narrative-sec .narr b{color:var(--indigo)}
+.narrative-sec .narr .mono{color:var(--gold);font-weight:700}
+
+/* ---- SHADOW READ ---- */
+.shadow-read{margin-top:16px;border:1px solid var(--line);border-left:3px solid var(--c2);border-radius:11px;padding:16px 18px;background:#FFFDF8}
+.shadow-read h4{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--indigo)}
+.shadow-read p{margin:0;font-size:13.5px;line-height:1.55;color:var(--text)}
+
+/* ---- ИТОГОВЫЕ ВЫВОДЫ (single page) ---- */
+.findings{padding:40px 44px;background:
+   radial-gradient(700px 300px at 90% -10%, rgba(197,151,58,.10), transparent 60%),
+   linear-gradient(180deg,#0E1320,#161C2E);color:#EAEEF6}
+.findings-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px;border-bottom:1px solid var(--line-dark);padding-bottom:18px;margin-bottom:22px}
+.fh-eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);font-weight:700;width:100%}
+.findings-head h2{font-size:clamp(26px,4vw,40px);font-weight:600;margin:0;color:#fff;flex:1;min-width:240px}
+.fh-coord{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.fh-coord .mono{font-size:15px;color:#AEB7CC}
+.fh-pci{font-size:24px;font-weight:800}.fh-pci small{font-size:13px;color:var(--text-dim);font-weight:500}
+.findings-decisive{background:rgba(197,151,58,.12);border:1px solid rgba(197,151,58,.4);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+.fd-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px}
+.findings-decisive p{margin:0;font-size:15.5px;line-height:1.55;color:#F2F5FA}
+.findings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-bottom:20px}
+.fcard{border:1px solid var(--line-dark);border-radius:12px;padding:16px 18px;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent)}
+.fc-icon{font-size:18px;line-height:1;margin-bottom:8px}
+.fcard-opp .fc-icon{color:#5bbf63}.fcard-risk .fc-icon{color:#e57373}
+.fcard-now .fc-icon{color:var(--gold-soft)}.fcard-step .fc-icon{color:var(--c4-soft,#5b9be3)}
+.fc-title{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim);font-weight:700;margin-bottom:7px}
+.fcard p{margin:0;font-size:13.5px;line-height:1.5;color:#DDE3EE}
+.fcard b{color:#fff}
+.step-axis{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;margin-right:6px;color:#1a1306}
+.step-axis.axis-a{background:#8fa0cf;color:#0E1320}.step-axis.axis-b{background:var(--gold)}.step-axis.axis-c{background:#5b9be3;color:#0E1320}
+.findings-route{border:1px solid var(--line-dark);border-radius:12px;padding:16px 20px;margin-bottom:18px;background:rgba(255,255,255,.02)}
+.fr-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px}
+.fr-path{font-family:'Cormorant',serif;font-size:22px;font-weight:600;color:#fff;margin-bottom:8px}
+.fr-rung{font-size:13px;color:#C2CADC}.fr-rung b{color:var(--gold-soft)}
+.findings-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--text-dim);border-top:1px solid var(--line-dark);padding-top:14px}
+.findings-foot b{color:var(--gold-soft)}
+
+@media (max-width:680px){
+  .summary-grid,.type-grid,.horizons{grid-template-columns:1fr}
+  .primer-axes,.atlas,.findings-grid{grid-template-columns:1fr}
+  .primer,.findings{padding:28px 18px}
+  .rep-controls>div{width:100%;flex-wrap:wrap}
+  .rep-controls .btn{flex:1;justify-content:center}
+  .fh-coord{align-items:flex-start}
+  .q{padding:18px 16px 6px}
+  .q-hint{margin-left:0}
+  .opt .axistag{display:none}
+  .scale-row .opt{min-width:calc(50% - 4px)}
+  .dt-row{padding:8px 10px;font-size:12px}
+  .rep-sec,.rep-cover,.rep-foot{padding-left:22px;padding-right:22px}
+}
+
+/* ============================================================
+   PRINT — A4 vector PDF
+   ============================================================ */
+@media print{
+  @page{size:A4 portrait;margin:14mm}
+  body{background:#fff}
+  .topbar,.resp-bar,.nav,.rep-controls,footer.legal,#toast{display:none!important}
+  .screen{display:none!important}
+  #report.active{display:block!important}
+  .wrap{max-width:none;padding:0}
+  .report{border:0;box-shadow:none;border-radius:0;margin:0}
+  .rep-cover{padding:0 0 18mm;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:var(--ink)!important;padding:14mm}
+  .rep-sec{padding:10mm 0;break-inside:avoid;page-break-inside:avoid}
+  .rep-sec{border-top:1px solid var(--line)}
+  .viz-card,.horizon,.type-col,.rung,.hz-item,.sum-card{break-inside:avoid;page-break-inside:avoid}
+  .rep-sec:nth-of-type(n){page-break-before:auto}
+  /* force page breaks before heavy sections */
+  section.rep-sec{page-break-before:always}
+  header.rep-cover{page-break-after:always}
+  .primer{page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .findings{page-break-before:always;-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#0E1320!important}
+  .atlas-card,.fcard,.pa,.shadow-read{break-inside:avoid;page-break-inside:avoid}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .rep-foot{display:flex!important;padding:8mm 0 0}
+}
+</style>
+
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="wrap">
+    <div class="brand"><span class="mark">ЯВЬ<span class="tm">™</span></span><small>Аудит культуры</small></div>
+    <div class="prog">
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-label" id="progLabel">Блок 0 из 7</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COVER ============ -->
+<section class="screen active" id="cover">
+  <div class="cover">
+    <div class="wrap">
+      <div class="eyebrow">Концепция диагностики · VPC · Vector · Power · Conversion</div>
+      <h1><span class="yav">ЯВЬ</span>™ — карта<br>конвертации потенциала</h1>
+      <div class="sub">Экспресс-аудит корпоративной культуры для акционера и CEO. Мы измеряем не то, что компания декларирует, — а то, что реально происходит с уникальностью человека в момент столкновения с системой.</div>
+
+      <div class="pitch">«Каждая компания — машина, превращающая потенциал людей в стоимость. Вопрос лишь в том, с каким КПД и какой ценой.»</div>
+
+      <div class="axes">
+        <div class="axis-card"><div class="glyph">A</div><h3>Источник координации</h3><p>Чем держится порядок: страхом, правилом, продуктом или смыслом?</p></div>
+        <div class="axis-card"><div class="glyph">B</div><h3>Геометрия власти</h3><p>Кто вправе начать действие, не спросив разрешения, — и что ему за это будет?</p></div>
+        <div class="axis-card"><div class="glyph">C</div><h3>Режим конвертации</h3><p>Что система делает с уникальностью: давит, не замечает, выжимает — или раскрывает?</p></div>
+      </div>
+
+      <div class="meta-row">
+        <div><b>7</b>блоков · поведенческих</div>
+        <div><b>~40</b>минут на прохождение</div>
+        <div><b>PCI</b>индекс конвертации потенциала</div>
+        <div><b>7</b>типов-аттракторов культуры</div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="startFresh()">Начать аудит →</button>
+        <button class="btn btn-ghost" id="resumeBtn" onclick="resumeSurvey()" hidden>Продолжить</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('howto').scrollIntoView()">Как это работает</button>
+        <button class="btn btn-ghost" onclick="toggleGroup()">Сводный отчёт группы</button>
+      </div>
+      <div id="groupPanel" class="group-panel" hidden>
+        <h3>Сводный отчёт группы</h3>
+        <p>Вставьте ссылки на отчёты участников, каждую с новой строки или через пробел. Инструмент соберёт общий профиль группы: медиану по осям, тип культуры, PCI и карту расслоения.</p>
+        <textarea id="groupInput" rows="6" placeholder="https://claude.ai/artifact/…#r1-…"></textarea>
+        <button class="btn btn-gold" onclick="buildGroup()">Собрать сводный отчёт →</button>
+        <div id="groupMsg" class="group-msg"></div>
+      </div>
+
+      <div id="howto" style="margin-top:54px;max-width:660px;color:#AEB7CC;font-size:13.5px;line-height:1.65">
+        <div class="eyebrow" style="margin-bottom:14px">Как читать инструмент</div>
+        <p>Вопросы здесь — не «согласны ли вы». Каждый вопрос просит вспомнить <b style="color:#EAEEF6">последний реальный случай</b> и выбрать, что произошло на самом деле. Варианты выстроены от низкого полюса оси к высокому. По вашим ответам инструмент рассчитает координату компании <span class="mono" style="color:var(--gold-soft)">A·B·C</span>, отнесёт её к одному из семи типов, найдёт теневой тип (куда тянет деградация), вычислит индекс <b style="color:#EAEEF6">PCI</b> и построит реалистичный маршрут к целевому состоянию.</p>
+        <p style="margin-top:14px;color:#8A92A6;font-style:italic">Если топ-команда проходит опрос вместе — разброс ответов сам станет диагнозом «расслоения культуры».</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SURVEY ============ -->
+<section class="screen" id="survey">
+  <div class="wrap">
+    <div class="resp-bar" id="respBar">
+      <div class="who">Респондент: <b id="respName">Респондент 1</b> · <span id="respRole">роль не указана</span></div>
+      <span class="chip" id="respCount">1 участник</span>
+    </div>
+    <div id="blockHost"></div>
+    <div class="nav">
+      <button class="btn btn-outline" id="prevBtn" onclick="prevBlock()">← Назад</button>
+      <div class="right">
+        <span class="count" id="answeredCount"></span>
+        <button class="btn btn-gold" id="nextBtn" onclick="nextBlock()">Далее →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REPORT host (built in part 3) ============ -->
+<section class="screen" id="report"><div class="wrap" id="reportHost"></div></section>
+
+<footer class="legal">
+  <div class="wrap">
+    <div>Методология <b>ЯВЬ™</b> © Сергей Новосад, 2026 · VPC-модель, типы-аттракторы, поведенческие индикаторы и индекс PCI — авторская интеллектуальная собственность.</div>
+    <div>novosadmsk@gmail.com · Confidential</div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+/* ============================================================
+   ЯВЬ™ — данные и движок
+   Оси: A (координация) · B (власть) · C (конвертация потенциала)
+   Балл варианта: A=1 B=2 C=3 D=4 → полюс оси 1..4
+   ============================================================ */
+
+/* --- 7 эталонных центроидов (A,B,C) в шкале 1..4 — координаты по промту v2.0 --- */
+const CENTROIDS = [
+  {key:'monolith', name:'Монолит',  cluster:'Подавление · тоталитарная', coord:[1.0,1.0,1.0], line:'Единая воля вершины, обнуляющая инициативу'},
+  {key:'pyramid',  name:'Пирамида', cluster:'Подавление · иерархическая', coord:[1.5,1.5,1.2], line:'Власть через ступени статуса'},
+  {key:'archive',  name:'Архив',    cluster:'Безразличие · бюрократическая', coord:[2.0,2.0,2.0], line:'Порядок ради порядка; человек = функция'},
+  {key:'swell',    name:'Зыбь',     cluster:'Безразличие · хаотическая', coord:[2.3,2.0,2.0], line:'Ручное тушение пожаров без памяти'},
+  {key:'forge',    name:'Кузница',  cluster:'Инновации', coord:[3.0,3.0,3.0], line:'Продукт-бог; люди — талантливое топливо'},
+  {key:'constell', name:'Созвездие',cluster:'Самораскрытие · флагман', coord:[4.0,4.0,4.0], line:'Каждый — Лидер; смысл и прибыль в одном контуре'},
+];
+/* "Перешеек" — не центроид, а состояние высокой дисперсии (по SD осей) */
+
+const TYPE_DETAIL = {
+  monolith:{strengths:'Молниеносная мобилизация под одну волю; единство в кризисе; ясность.',
+    risks:'Негативная селекция талантов; информационная слепота; полная зависимость от вершины; хрупкость.',
+    oppo:'Подходит для разворота в остром кризисе и для бизнесов, где цена ошибки исполнителя катастрофична. Сильна там, где нужна одна рука и абсолютная дисциплина исполнения.',
+    econ:'Дёшев в координации, но платит скрытую цену: лучшие уходят, информация наверх искажается, а вся стоимость завязана на одном человеке — это премия за риск, которую закладывает рынок и инвестор.',
+    degrade:'Страх-паралич (тяжёлая форма C1) под усилением давления.',
+    signs:['Инициировать может только верх','Идеи снизу не доходят до рассмотрения','>70% времени на совещании говорит один человек']},
+  pyramid:{strengths:'Управляемость крупного масштаба; предсказуемость; пригодна для регулируемых сред.',
+    risks:'Медлительность; гашение талантов средним звеном; политика за ранг.',
+    oppo:'Оптимальна для зрелого масштаба со стабильным продуктом и высокими требованиями к контролю — банки, инфраструктура, госконтракты. Даёт предсказуемость, которую ценят регулятор и крупный клиент.',
+    econ:'Конвертирует надёжность в выручку, но теряет на скорости и инновациях: каждый слой согласований — это упущенная сделка и недополученная идея. Растёт линейно, пока рынок не потребует скачка.',
+    degrade:'В «Архив» — при выхолащивании смысла и ритуализации.',
+    signs:['Право инициировать привязано к грейду','>4 согласующих инстанций на решение','Коммуникация строго «по инстанции»']},
+  archive:{strengths:'Надёжность рутины, аудируемость, юридическая защищённость, масштабируемость стандартных операций.',
+    risks:'Смысловая анемия; тихий уход неравнодушных; неспособность к развитию.',
+    oppo:'Незаменим там, где главный продукт — соответствие и повторяемость: комплаенс, расчётные операции, массовый бэк-офис. Защищает компанию юридически и операционно.',
+    econ:'Максимально эффективен на стабильном потоке однотипных операций и почти не создаёт новой стоимости. Опасен тем, что выглядит «спокойным» — низкая текучесть маскирует отток вовлечённости и эрозию будущего.',
+    degrade:'В «Зыбь» — когда шок ломает регламенты, а навыка инициативы нет.',
+    signs:['Доминируют апелляции «есть/нет регламента»','Низкая текучесть + низкая вовлечённость','Слабое личное авторство в результатах']},
+  swell:{strengths:'Дешёвая гибкость и скорость на ранней/выживательной стадии; терпимость к неопределённости.',
+    risks:'Не масштабируется; выгорание «спасателей»; потеря знаний.',
+    oppo:'Работает на ранней стадии и в режиме выживания, когда важнее реагировать, чем строить. Терпимость к хаосу позволяет ловить возможности, которые системная компания пропустит.',
+    econ:'Создаёт стоимость рывками и теряет её на отсутствии памяти: каждый уход уносит знание, каждый аврал жжёт людей. Не масштабируется без перехода в другой тип — потолок роста близко.',
+    degrade:'В «Архив» (если забюрократизируется) либо распад/поглощение.',
+    signs:['Нет повторяемых процессов','Героический аврал как норма','Решения зависят от того, «кто рядом»']},
+  forge:{strengths:'Максимум создания новой стоимости; притяжение талантов; скорость; превосходство продукта.',
+    risks:'Выжигание носителей; «потеря души» при росте; внутренняя конкуренция; срастание с подавлением (визионер-тиран).',
+    oppo:'Двигатель создания новой стоимости: лучший продукт, скорость, магнит для амбициозных талантов. Идеален для технологического лидерства и захвата рынка, пока окно открыто.',
+    econ:'Конвертирует потенциал в стоимость с высоким КПД — но через расход людей как топлива. Прибыльна и притягательна, однако несёт два встроенных риска: выжигание носителей и срыв в автократию визионера.',
+    degrade:'В «Зыбь» при неудачном скейлинге или в «Монолит» при усилении основателя.',
+    signs:['Апелляция «этого требует продукт/данные»','Идею легко запустить, но выгорание нормализовано','«Выгорел — заменим»']},
+  constell:{strengths:'Удержание и раскрытие сильнейших; устойчивость к шоку; инновации без выжигания; смысл и прибыль одновременно.',
+    risks:'Высокие требования к зрелости лидеров; риск терапевтизации; карго-культ «мы все лидеры»; дорогой вход.',
+    oppo:'Высший КПД конвертации: удерживает и раскрывает сильнейших, генерирует инновации без выжигания, держит удар кризиса за счёт распределённого лидерства. Смысл и прибыль работают в одном контуре.',
+    econ:'Самый дорогой на входе и самый устойчивый на дистанции тип. Превращает человеческую уникальность в невоспроизводимое конкурентное преимущество — то, что нельзя скопировать или купить, в отличие от технологии.',
+    degrade:'В «Кузницу» первым же (утрата C4→C3) при смене лидера или имитации.',
+    signs:['Initiation latency < 14 дней на всех уровнях','Роль пересобирается вокруг человека','Метрика самореализации в одном контуре с прибылью']},
+  isthmus:{strengths:'Окно возможностей — переходник управляем в нужную сторону при интервенции.',
+    risks:'Без вмешательства скатывается к доминирующему соседнему типу (обычно вниз по оси C).',
+    oppo:'Состояние перехода — это окно: культуру можно осознанно направить вверх, пока она пластична. Разные контуры позволяют тестировать целевой режим на одном подразделении прежде, чем масштабировать.',
+    econ:'Самое нестабильное и потому самое решающее состояние. Без управления дисперсия разрешится вниз по оси C к самому «гравитационному» соседу; с управлением — это дешёвый момент для сдвига всей компании.',
+    degrade:'К наиболее «гравитационному» соседнему типу.',
+    signs:['Высокая дисперсия координат между подразделениями','Конфликт «языков» порядка','«У нас две компании в одной»']},
+};
+
+/* Краткие смысловые описания для вводного раздела отчёта (методологический праймер) */
+/* Четыре кластера-режима (ось C) — смысловая рамка для primer'а отчёта */
+const CLUSTERS = [
+  {id:'C1',name:'Подавление',sub:'Уникальность = угроза порядку',
+   desc:'Стоимость создаётся за счёт устранения вариативности людей. Координация держится на воле вершины и страхе санкции.',color:'var(--c1)'},
+  {id:'C2',name:'Безразличие',sub:'Уникальность = шум, не релевантна',
+   desc:'Никто не подавлен, но никто и не виден. Человек — взаимозаменяемая функция; смысл вытеснен процедурой или вечным тушением пожаров.',color:'var(--c2)'},
+  {id:'C3',name:'Инновации',sub:'Уникальность = топливо для продукта',
+   desc:'Человек ценится инструментально — ровно настолько, насколько служит продукту и росту. Один из самых стоимостно-продуктивных режимов, но с риском выгорания носителей.',color:'var(--c3)'},
+  {id:'C4',name:'Самораскрытие',sub:'Уникальность = цель И источник стоимости',
+   desc:'Экзистенциальное самораскрытие сотрудника и рыночная сила компании сведены в один контур. Каждый — Лидер на своей задаче; смысл и прибыль перестают быть компромиссом.',color:'var(--c4)'},
+];
+
+/* Атлас 7 типов: суть + риск + возможность для бизнеса + подтип */
+const TYPE_BRIEF = [
+  {key:'monolith',name:'Монолит',code:'A1·B1·C1',cluster:'Подавление',sub:'тоталитарная',
+   essence:'Всё держится единой волей вершины. Уникальность — угроза, инициатива обнуляется.',
+   risk:'Негативная селекция талантов, информационная слепота, тотальная зависимость от первого лица.',
+   opp:'Молниеносная мобилизация под одну волю; незаменим в остром кризисе и при развороте.'},
+  {key:'pyramid',name:'Пирамида',code:'A1.5·B1.5·C1.2',cluster:'Подавление',sub:'иерархическая',
+   essence:'Власть распределена по ступеням статуса. Инициатива идёт строго по рангу.',
+   risk:'Медлительность, гашение талантов средним звеном, политика за ранг вместо результата.',
+   opp:'Управляемость большого масштаба и предсказуемость; рабочая база для регулируемых отраслей.'},
+  {key:'archive',name:'Архив',code:'A2·B2·C2',cluster:'Безразличие',sub:'бюрократическая',
+   essence:'Порядок держится безличным регламентом. Человек — функция, его уникальность — шум.',
+   risk:'Смысловая анемия, тихий уход неравнодушных, неспособность к развитию и инновациям.',
+   opp:'Надёжность рутины, аудируемость, юридическая защищённость, дешёвое масштабирование стандартных операций.'},
+  {key:'swell',name:'Зыбь',code:'A2.3·B2·C2',cluster:'Безразличие',sub:'хаотическая',
+   essence:'Ручное тушение пожаров без памяти и процессов; порядок держится тем, «кто рядом».',
+   risk:'Не масштабируется, выгорание «спасателей», потеря знаний, риск распада или поглощения.',
+   opp:'Дешёвая гибкость и скорость на ранней стадии; высокая терпимость к неопределённости.'},
+  {key:'forge',name:'Кузница',code:'A3·B3·C3',cluster:'Инновации',sub:'продуктовая (+ Kaizen-ветвь)',
+   essence:'Продукт — бог. Люди — талантливое топливо: ценны ровно настолько, насколько продуктивны.',
+   risk:'Выжигание носителей, «потеря души» при росте, внутренняя гонка, срыв в автократию визионера.',
+   opp:'Максимум создания новой стоимости, магнит для талантов, скорость и превосходство продукта.'},
+  {key:'constell',name:'Созвездие',code:'A4·B4·C4',cluster:'Самораскрытие',sub:'флагман',
+   essence:'Каждый — Лидер на своей задаче. Уникальность человека — одновременно цель и источник стоимости.',
+   risk:'Высокая планка зрелости лидеров; риск имитации, карго-культа и терапевтизации; дорогой вход.',
+   opp:'Невоспроизводимое конкурентное преимущество: удержание сильнейших, инновации без выжигания, смысл и прибыль в одном контуре.'},
+  {key:'isthmus',name:'Перешеек',code:'смешанный',cluster:'Переход',sub:'гибрид / переходник',
+   essence:'Компания в активном переходе: разные контуры живут в разных режимах одновременно.',
+   risk:'Без интервенции скатывается к самому «гравитационному» соседнему типу — обычно вниз по оси C.',
+   opp:'Окно управляемого сдвига: переходник можно осознанно направить вверх, пока он не застыл.'},
+];
+
+/* ============================================================
+   ВОПРОСЫ
+   axis: 'A'|'B'|'C'|null(context)|'X'(валидация/динамика, не в скоринг осей)
+   opts: [{t:текст, v:балл 1..4}]  (для шкальных/поведенческих)
+   kind: 'beh' поведенческий | 'ctx' контекст(select) | 'multi' мультиселект | 'scale'
+   ============================================================ */
+const BLOCKS = [
+{
+  id:0, title:'Контекст респондента и компании', min:7,
+  intro:'Этот блок настраивает интерпретацию: стадия, отрасль и недавние шоки меняют то, как читаются координаты. В зарегулированных отраслях полюса A2/B1 — норма, а не патология.',
+  diag:'Калибровка модели · сегмент для тепловой карты',
+  remind:'профиль компании и поправочные коэффициенты интерпретации',
+  qs:[
+    {id:'ctx_role', kind:'ctx', axis:null, t:'Ваша роль в компании',
+      sel:['Акционер / собственник','CEO / Генеральный директор','Член C-level (топ-команда)','Руководитель N-1','Внешний консультант / советник','Другое']},
+    {id:'ctx_seg', kind:'ctx', axis:null, t:'Какое подразделение вы оцениваете в этом прохождении?',
+      hint:'Если оцениваете компанию целиком — выберите «Компания в целом». Разные сегменты дадут тепловую карту.',
+      sel:['Компания в целом','Топ-команда / штаб','Продукт / R&D / разработка','Коммерция / продажи / маркетинг','Операции / производство','Бэк-офис / поддержка (финансы, HR, юр.)','Дочерняя структура / регион']},
+    {id:'ctx_size', kind:'ctx', axis:null, t:'Численность компании',
+      sel:['до 15 человек','15–50','51–250','251–1000','1001–5000','более 5000']},
+    {id:'ctx_stage', kind:'ctx', axis:null, t:'Стадия жизненного цикла (по аналогии с Adizes)',
+      sel:['Становление (Infancy)','Активный рост (Go-Go)','Юность / систематизация (Adolescence)','Расцвет (Prime)','Стабильность','Аристократия / спад']},
+    {id:'ctx_reg', kind:'ctx', axis:null, t:'Уровень регуляторной зарегулированности отрасли',
+      hint:'Влияет на интерпретацию: высокая зарегулированность делает A2 (регламент) и B1 (монополия инициатив) частично экзогенными.',
+      sel:['Низкая (мало внешних предписаний)','Средняя','Высокая (банки, фарма, госсектор, инфраструктура)']},
+    {id:'ctx_shock', kind:'multi', axis:null, t:'Какие из этих событий компания пережила за последние 18 месяцев?',
+      hint:'Триггеры переходов между типами. Выберите все подходящие.',
+      opts:[{t:'Быстрый рост / масштабирование'},{t:'Кризис / резкое сжатие'},{t:'Смена CEO'},{t:'M&A / поглощение / слияние'},{t:'IPO / приход институционального капитала'},{t:'Выход или отход основателя'},{t:'Поколенческая смена в команде'},{t:'Усиление регуляторного давления'},{t:'Ничего из перечисленного'}]},
+    {id:'ctx_geo', kind:'ctx', axis:null, t:'Преобладающий национально-культурный контекст команды',
+      hint:'Для калибровки идиом власти: в высокодистантных по власти культурах полюс A1/B1 может быть нормой.',
+      sel:['Россия / СНГ','Восточная Европа','Западная Европа','Северная Америка','Ближний Восток','Азия','Смешанный / международный']},
+  ]
+},
+{
+  id:1, title:'Ось C — режим конвертации потенциала', min:10, axis:'C',
+  intro:'Стержневой блок и операциональный нерв ЯВЬ. Что система делает с уникальностью человека: давит (C1), не замечает (C2), выжимает ради продукта (C3) — или раскрывает как источник стоимости (C4). Отсюда рождается индекс PCI.',
+  diag:'Ось C · главный источник PCI',
+  remind:'координату по оси C и большую часть индекса PCI',
+  hint:'Отвечайте по последнему реальному случаю, а не по тому, как «должно быть».',
+  qs:[
+    {id:'c1', kind:'beh', axis:'C', t:'Сотрудник предложил идею, противоречащую мнению CEO. Что произошло в ближайшие 14 дней?',
+      opts:[{t:'Идея исчезла, сотрудник получил сигнал «не лезь»',v:1},{t:'Сотрудник получил обратную связь, почему нет',v:2},{t:'Сформировали рабочую группу для проверки',v:3},{t:'Идею протестировали, сотрудника назначили Лидером проверки',v:4}]},
+    {id:'c2', kind:'beh', axis:'C', w:2, t:'Ценный сотрудник перестал быть продуктивным (выгорел / изменились задачи). Что сделала система за 60 дней?',
+      hint:'Решающий тест, отличающий Кузницу (C3) от Созвездия (C4). Этот индикатор учитывается с повышенным весом.',
+      opts:[{t:'Вывели / выдавили',v:1},{t:'Оставили, но игнорируют',v:2},{t:'Заменили, аккуратно расставшись',v:3},{t:'Пересобрали роль вокруг его сильных сторон',v:4}]},
+    {id:'c3', kind:'beh', axis:'C', t:'В итогах последнего квартала чьё авторство видно в ключевых результатах?',
+      opts:[{t:'Только вершины',v:1},{t:'«Отдела», без конкретных лиц',v:2},{t:'Нескольких звёзд-героев',v:3},{t:'Многих конкретных людей на их задачах',v:4}]},
+    {id:'c4', kind:'beh', axis:'C', t:'Как в компании говорят о людях на перформанс-ревью?',
+      opts:[{t:'Как об объекте контроля',v:1},{t:'Как о штатной единице / функции',v:2},{t:'Как о ресурсе / таланте для задач',v:3},{t:'Как о человеке, чьё развитие — самостоятельная цель',v:4}]},
+    {id:'c5', kind:'beh', axis:'C', t:'Что новый сотрудник узнаёт в первую неделю прежде всего?',
+      opts:[{t:'«Как здесь нельзя»',v:1},{t:'Регламенты и доступы',v:2},{t:'Продукт и планку',v:3},{t:'В чём его уникальность и на какой задаче он Лидер',v:4}]},
+    {id:'c6', kind:'beh', axis:'C', t:'Что в компании считается худшим проступком?',
+      opts:[{t:'Перечить руководству',v:1},{t:'Нарушить регламент',v:2},{t:'Не достичь амбициозной цели',v:3},{t:'Скрыть проблему / отказаться от авторства и инициативы',v:4}]},
+    {id:'c7', kind:'beh', axis:'C', t:'Есть ли метрика самореализации / проявленности людей рядом с метрикой прибыли — и считаются ли они конкурентами?',
+      opts:[{t:'Нет такой метрики',v:1},{t:'Есть формально, не используется',v:2},{t:'Есть, но «вторична после результата»',v:3},{t:'Есть, и обе в одном контуре, не конкурируют',v:4}]},
+    {id:'c8', kind:'beh', axis:'C', t:'Насколько ключевые роли выстроены под сильные стороны конкретных людей (personalization ratio)?',
+      opts:[{t:'Роли — жёсткие слоты, человек подгоняется под них',v:1},{t:'Почти все роли стандартны, личное не учитывается',v:2},{t:'Часть ролей гибкая, но при потере продуктивности роль не меняют',v:3},{t:'Значимая доля ролей собрана вокруг людей; есть кейсы пересборки',v:4}]},
+    {id:'c9', kind:'beh', axis:'C', t:'Как система относится к выгоранию сильного носителя?',
+      opts:[{t:'Не замечает, пока человек не сломается',v:1},{t:'Это его личная проблема',v:2},{t:'Нормализовано как «плата за уровень»',v:3},{t:'Считается симптомом системного сбоя, требует интервенции',v:4}]},
+    {id:'c10', kind:'beh', axis:'C', t:'Когда уникальный человек уходит, что происходит с его «местом»?',
+      opts:[{t:'Облегчение — меньше нестандартности',v:1},{t:'Ищут такую же штатную единицу',v:2},{t:'Ищут более сильного «по тем же функциям»',v:3},{t:'Роль и смысл пересобирают; уход — потеря авторства, а не вакансии',v:4}]},
+    {id:'c11', kind:'beh', axis:'C', w:2, t:'Второй решающий тест: сотрудник предложил способ работать, который ему лично подходит больше, но не вписан в стандарт. Реакция системы?',
+      hint:'Дублирует тест C3/C4 под другим углом — для устойчивости диагноза. Учитывается с повышенным весом.',
+      opts:[{t:'«Делай как все» — стандарт выше человека',v:1},{t:'Игнор: формально можно, по факту никто не меняет',v:2},{t:'Разрешат, если так быстрее для продукта',v:3},{t:'Стандарт пересобирают, если так человек сильнее — и это норма',v:4}]},
+    {id:'c12', kind:'beh', axis:'C', t:'Что происходит с «неудобным талантом» — сильным, но спорящим и несистемным?',
+      opts:[{t:'Выдавливается как источник трения',v:1},{t:'Терпится, держится на дистанции',v:2},{t:'Используется точечно под задачи, где силён',v:3},{t:'Вокруг него осознанно строят зону, где его сила раскрывается',v:4}]},
+    {id:'c13', kind:'beh', axis:'C', t:'За последний год вы видели реальный случай, когда систему изменили под сильного человека, а не наоборот?',
+      hint:'Проверка на подлинность C4: не намерение, а зафиксированный факт пересборки.',
+      opts:[{t:'Нет, и это было бы немыслимо',v:1},{t:'Нет, человек всегда подстраивается под систему',v:2},{t:'Был один-два пограничных случая',v:3},{t:'Да, это нормальная практика с конкретными примерами',v:4}]},
+    {id:'c14', kind:'beh', axis:'C', t:'Если завтра уйдёт ваш самый яркий сотрудник — что потеряет компания?',
+      opts:[{t:'Ничего: функция закрывается заменой',v:1},{t:'Немного скорости на время поиска',v:2},{t:'Заметную часть результата и экспертизы',v:3},{t:'Уникальный контур стоимости, который не восстановить наймом',v:4}]},
+  ]
+},
+{
+  id:2, title:'Ось B — геометрия власти и право на инициирование', min:8, axis:'B',
+  intro:'Не право решать (decision right), а более раннее и диагностичное право начать действие без санкции сверху. Здесь уникальность человека либо входит в систему, либо отсекается.',
+  diag:'Ось B · право на инициирование',
+  remind:'координату по оси B (геометрия власти)',
+  hint:'Считайте по фактам последнего года, а не по тому, что записано в регламентах.',
+  qs:[
+    {id:'b1', kind:'beh', axis:'B', t:'С какого нижнего уровня за последний год запускался реализованный (дошедший до результата) проект?',
+      opts:[{t:'Только топ (N, N-1)',v:1},{t:'Ниже — только через разрешение топа',v:2},{t:'Линейные руководители в своих зонах',v:3},{t:'Любой сотрудник на своей задаче',v:4}]},
+    {id:'b2', kind:'beh', axis:'B', t:'Медианное время от идеи сотрудника уровня N-2 до первого официального рассмотрения (initiation latency)?',
+      opts:[{t:'Практически никогда не доходит',v:1},{t:'Более 60 дней',v:2},{t:'14–60 дней',v:3},{t:'Менее 14 дней, есть институциональный маршрут',v:4}]},
+    {id:'b3', kind:'beh', axis:'B', t:'Сотрудник начал действовать, не спросив разрешения, и оказался прав. Что с ним было?',
+      opts:[{t:'Наказан за самовольство',v:1},{t:'«Повезло, но впредь спрашивай»',v:2},{t:'Похвален',v:3},{t:'Это норма; оправдания требует как раз бездействие',v:4}]},
+    {id:'b4', kind:'beh', axis:'B', t:'Сколько согласующих инстанций проходит типовое нерутинное решение?',
+      opts:[{t:'Всё идёт через вершину',v:1},{t:'Более четырёх',v:2},{t:'Одна–три по зоне ответственности',v:3},{t:'Решает Лидер задачи, согласуя контур',v:4}]},
+    {id:'b5', kind:'beh', axis:'B', t:'Можно ли в компании напрямую обратиться через уровень иерархии?',
+      opts:[{t:'Это нарушение субординации',v:1},{t:'Только с разрешения',v:2},{t:'Можно по делу',v:3},{t:'Нормально — иерархия служебна',v:4}]},
+    {id:'b6', kind:'beh', axis:'B', t:'Каково соотношение санкций за «ошибку действия» и «ошибку бездействия» (penalty asymmetry)?',
+      opts:[{t:'Карается только действие; бездействие безопасно',v:1},{t:'В основном карается действие',v:2},{t:'Симметрично',v:3},{t:'Пассивность / неинициирование — более серьёзный сигнал',v:4}]},
+    {id:'b7', kind:'beh', axis:'B', t:'Как формулируется задача, когда её передают сотруднику?',
+      opts:[{t:'Подробная инструкция, шаг в сторону запрещён',v:1},{t:'Задача + требование согласовывать ходы',v:2},{t:'Цель и рамка, способ — на усмотрение исполнителя',v:3},{t:'«Ты Лидер на этой задаче» — с правом и обязанностью инициировать',v:4}]},
+    {id:'b8', kind:'beh', axis:'B', t:'Что происходит с инициативой среднего звена, не вписавшейся в план?',
+      opts:[{t:'Пресекается как угроза порядку',v:1},{t:'Откладывается до согласования сверху',v:2},{t:'Рассматривается по существу в своей зоне',v:3},{t:'Поощряется даже при риске — важнее, что человек взял ответственность',v:4}]},
+    {id:'b9', kind:'beh', axis:'B', t:'Когда вершина в отпуске или недоступна неделю — как работает компания?',
+      hint:'Косвенный тест реальной распределённости права на инициирование.',
+      opts:[{t:'Замирает, копит вопросы до возвращения',v:1},{t:'Работает по рутине, новое не запускается',v:2},{t:'Продолжает, решения принимаются в зонах',v:3},{t:'Не замечает отсутствия — лидерство распределено',v:4}]},
+  ]
+},
+{
+  id:3, title:'Ось A — источник координации', min:8, axis:'A',
+  intro:'Онтологический источник порядка — то, ссылкой на что в компании в конечном счёте разрешается спор «почему мы делаем так»: воля вершины (A1), регламент (A2), продукт/рынок (A3) или разделённый смысл (A4).',
+  diag:'Ось A · чем держится порядок',
+  remind:'координату по оси A (источник координации)',
+  hint:'Вспоминайте, на что реально ссылается «победившая» сторона, а не что написано в ценностях на стене.',
+  qs:[
+    {id:'a1', kind:'beh', axis:'A', t:'На что ссылалась «победившая» сторона в последнем разрешённом споре?',
+      opts:[{t:'«Так сказал руководитель»',v:1},{t:'«Так положено / так в регламенте»',v:2},{t:'«Этого требует продукт / данные»',v:3},{t:'«Это наш смысл, и я лично за это отвечаю»',v:4}]},
+    {id:'a2', kind:'beh', axis:'A', t:'Как выглядит типичное совещание — кто говорит?',
+      opts:[{t:'Монолог вершины, остальные конспектируют',v:1},{t:'Говорят по убыванию ранга',v:2},{t:'Спор по содержанию, статус во время спора не главный',v:3},{t:'Говорит Лидер задачи, фасилитация ротируется, CEO может быть в меньшинстве',v:4}]},
+    {id:'a3', kind:'beh', axis:'A', t:'Как принимаются стратегические решения?',
+      opts:[{t:'Единолично вершиной',v:1},{t:'По процедуре и визированию',v:2},{t:'По данным и силе аргумента',v:3},{t:'Через разделённый смысл + контур прибыли',v:4}]},
+    {id:'a4', kind:'beh', axis:'A', t:'Что в первую очередь фиксируется в протоколе совещания?',
+      opts:[{t:'Поручения',v:1},{t:'Процедурные пункты',v:2},{t:'Решения и ответственные',v:3},{t:'Решения + чьё авторство / лидерство',v:4}]},
+    {id:'a5', kind:'beh', axis:'A', t:'Как разбирается серьёзная ошибка?',
+      opts:[{t:'Показательное наказание',v:1},{t:'Разбор по процедуре — кто отступил от регламента',v:2},{t:'Fail-fast разбор ради продукта',v:3},{t:'Материал для роста и пересборки; наказывается сокрытие, а не ошибка',v:4}]},
+    {id:'a6', kind:'beh', axis:'A', t:'Чем держится согласованность, когда вершина недоступна?',
+      opts:[{t:'Всё замирает',v:1},{t:'Работает регламент',v:2},{t:'Держит продукт / цель',v:3},{t:'Держит смысл и распределённое лидерство',v:4}]},
+    {id:'a7', kind:'beh', axis:'A', t:'Как сотрудники описывают «зачем мы здесь»?',
+      opts:[{t:'«Чтобы выполнять, что скажут»',v:1},{t:'«Чтобы процесс работал»',v:2},{t:'«Чтобы сделать лучший продукт»',v:3},{t:'«Чтобы каждый реализовался и компания была сильнейшей — это одно и то же»',v:4}]},
+    {id:'a8', kind:'beh', axis:'A', t:'Откуда берётся «правильный ответ» в спорной рабочей ситуации?',
+      opts:[{t:'Из статуса того, кто его произносит',v:1},{t:'Из прецедента и нормативки',v:2},{t:'Из проверки на продукте / рынке',v:3},{t:'Из совместно достроенного смысла задачи',v:4}]},
+    {id:'a9', kind:'beh', axis:'A', t:'Дискриминатор смысла: если продукт завтра сменится полностью — что удержит команду вместе?',
+      hint:'Различает Кузницу (держит продукт, A3) и Созвездие (держит смысл сверх продукта, A4).',
+      opts:[{t:'Ничего — без задач команда рассыплется',v:1},{t:'Трудовые договоры и регламенты',v:2},{t:'Азарт сделать новый сильный продукт',v:3},{t:'Разделённый смысл «зачем мы вместе», переживающий смену продукта',v:4}]},
+  ]
+},
+];
+
+/* ============================================================
+   БЛОКИ 4–6
+   ============================================================ */
+const BLOCKS_EXT = [
+{
+  id:4, title:'Артефакты и идиомы — что звучит на самом деле', min:8, axis:'X',
+  intro:'Перекрёстная проверка. Декларации легко подделать, живые фразы и артефакты — нет. Этот блок ловит расхождение между «ценностями на стене» и реальным языком компании и служит весовой поправкой к осям A/B/C.',
+  diag:'Валидация · поправка к осям',
+  remind:'поправочный коэффициент достоверности к координатам',
+  qs:[
+    {id:'id_supp', kind:'multi', axis:null, t:'Подавление: какие из этих фраз реально звучат у вас?',
+      hint:'Отмечайте только то, что слышали за последние месяцы. Можно ничего.',
+      cluster:'C1',
+      opts:[{t:'«Инициатива наказуема»'},{t:'«Будет так, как я сказал»'},{t:'«Не нужно умничать»'},{t:'«Кто тебя спрашивал?»'},{t:'«Лес рубят — щепки летят»'}]},
+    {id:'id_bur', kind:'multi', axis:null, t:'Бюрократия: какие фразы вам знакомы?', cluster:'C2b',
+      opts:[{t:'«Это не входит в мои обязанности»'},{t:'«Нет регламента — нет действия»'},{t:'«Согласуйте со всеми»'},{t:'«Мы так не делаем»'}]},
+    {id:'id_chaos', kind:'multi', axis:null, t:'Хаос: что из этого про вас?', cluster:'C2c',
+      opts:[{t:'«Как-нибудь разрулим»'},{t:'«Горит — туши»'},{t:'«У нас всё на ручном управлении»'},{t:'«Это к кому-то, но не ко мне»'}]},
+    {id:'id_inno', kind:'multi', axis:null, t:'Инновации: какие фразы в ходу?', cluster:'C3',
+      opts:[{t:'«Move fast / ship it»'},{t:'«Лучшая идея побеждает»'},{t:'«Данные решают»'},{t:'«10x, а не 10%»'},{t:'«Если не делаешь — делает конкурент»'}]},
+    {id:'id_self', kind:'multi', axis:null, t:'Самораскрытие: звучит ли такое — и без иронии?', cluster:'C4',
+      opts:[{t:'«Ты Лидер на этой задаче»'},{t:'«Что здесь твоё?»'},{t:'«Где ты в этом решении?»'},{t:'«Принеси себя, а не роль»'},{t:'«Мы не выбираем между человеком и результатом»'}]},
+    {id:'art_onb', kind:'beh', axis:'C', t:'Артефакт онбординга: чему по сути учат новичка?',
+      opts:[{t:'Лояльности и тому, «как здесь нельзя»',v:1},{t:'Регламентам, доступам, иерархии',v:2},{t:'Продукту и планке: «покажи, на что способен»',v:3},{t:'Двухконтурно: продукт + «в чём твоя уникальность и где ты Лидер»',v:4}]},
+    {id:'art_status', kind:'beh', axis:'B', t:'Артефакт статуса: чем определяется вес человека?',
+      opts:[{t:'Близостью к первому лицу',v:1},{t:'Формальным рангом и стажем',v:2},{t:'Вкладом в продукт и репутацией мастерства',v:3},{t:'Контекстом задачи: на своей задаче ты Лидер, на чужой — соучастник',v:4}]},
+    {id:'art_news', kind:'beh', axis:'A', t:'Артефакт информации: что происходит с плохими новостями?',
+      opts:[{t:'Задерживаются и искажаются по пути наверх',v:1},{t:'Идут строго по инстанции, медленно',v:2},{t:'Доходят, если важны для продукта',v:3},{t:'Эскалируются свободно; сокрытие — худший проступок',v:4}]},
+  ]
+},
+{
+  id:5, title:'Дисперсия и Перешеек — «две компании в одной?»', min:6, axis:'X',
+  intro:'Большинство реальных компаний — не чистый тип, а Перешеек: разные контуры живут в разных режимах. Этот блок выявляет расслоение культуры. Если опрос проходит несколько человек, инструмент дополнительно считает разброс их ответов.',
+  diag:'Тип «Перешеек» · карта расслоения',
+  remind:'оценку расслоения культуры и потребность в посегментной диагностике',
+  qs:[
+    {id:'d1', kind:'scale', axis:'X', t:'Насколько по-разному подразделения «говорят на языке порядка»?',
+      opts:[{t:'Единый язык во всей компании',v:1},{t:'Лёгкие различия',v:2},{t:'Заметный разброс',v:3},{t:'Резкий контраст — будто разные организации',v:4}]},
+    {id:'d2', kind:'beh', axis:'X', t:'Есть ли контур с принципиально иной культурой, чем у вершины?',
+      opts:[{t:'Нет, всё однородно',v:1},{t:'Скорее нет',v:2},{t:'Да, один-два таких контура',v:3},{t:'Да, ярко: напр. инновационный продукт при бюрократической/директивной вершине',v:4}]},
+    {id:'d3', kind:'scale', axis:'X', t:'Насколько контрастируют зоны высокой и низкой вовлечённости?',
+      opts:[{t:'Ровно везде',v:1},{t:'Небольшие перепады',v:2},{t:'Сильные перепады',v:3},{t:'Полярно: «островки огня» и «выжженные зоны»',v:4}]},
+    {id:'d4', kind:'beh', axis:'X', t:'Звучит ли в компании ощущение «у нас две компании в одной»?',
+      opts:[{t:'Никогда',v:1},{t:'Изредка',v:2},{t:'Периодически',v:3},{t:'Постоянно и предметно',v:4}]},
+    {id:'d5', kind:'beh', axis:'X', t:'Что происходит на стыке двух культурных контуров (напр. продукт ↔ бэк-офис)?',
+      opts:[{t:'Открытый конфликт и блокировки',v:1},{t:'Хроническое трение и взаимное непонимание',v:2},{t:'Рабочее напряжение, но договариваются',v:3},{t:'Контуры осознаны и намеренно состыкованы',v:4}]},
+    {id:'d6', kind:'beh', axis:'X', t:'После недавнего шока (M&A / смена CEO / рост) культура стала более…',
+      opts:[{t:'Разнородной и конфликтной',v:1},{t:'Разнородной, но терпимой',v:2},{t:'Постепенно выравнивается',v:3},{t:'Шок не расколол — единый контур удержан',v:4}]},
+  ]
+},
+{
+  id:6, title:'Динамика, триггеры и вектор акционера', min:8, axis:'X',
+  intro:'Куда движется культура, какие триггеры на неё давят — и каким акционер хочет видеть целевое состояние. Здесь же проверяется реалистичность маршрута: прямой скачок к Созвездию из подавления невозможен.',
+  diag:'Вектор движения · целевое состояние · смыслы собственника',
+  remind:'вектор трансформации и его сцепку с вашими личными смыслами',
+  qs:[
+    {id:'dyn_drift', kind:'beh', axis:'X', t:'Куда, по вашему ощущению, дрейфовала культура последние 12 месяцев?',
+      opts:[{t:'Вниз — к подавлению / страху',v:1},{t:'Вниз — к безразличию / выгоранию',v:2},{t:'Стабильно, без явного вектора',v:3},{t:'Вверх — к большему раскрытию и инициативе',v:4}]},
+    {id:'dyn_trig', kind:'multi', axis:null, t:'Какие триггеры сейчас активнее всего давят на культуру?',
+      hint:'Выберите 1–3 главных.',
+      opts:[{t:'Рост / масштабирование'},{t:'Кризис / сжатие'},{t:'Смена или усиление первого лица'},{t:'M&A / интеграция'},{t:'IPO / институциональный капитал'},{t:'Выход основателя'},{t:'Поколенческий запрос на смысл и инициативу'},{t:'Регуляторное давление'}]},
+    {id:'val_role', kind:'beh', axis:'X', t:'Кто для вас люди в бизнес-модели — по-честному?',
+      hint:'Ценностный вопрос. Отвечайте как собственник, а не как «надо».',
+      opts:[{t:'Управляемый ресурс, который нужно держать в рамках',v:1},{t:'Взаимозаменяемые функции под процессы',v:2},{t:'Капитал и таланты — топливо роста',v:3},{t:'Соавторы; их раскрытие и есть источник стоимости',v:4}]},
+    {id:'val_contour', kind:'beh', axis:'X', t:'Смысл и прибыль — для вас это…',
+      opts:[{t:'Прибыль первична, смысл — украшение',v:1},{t:'Смысл важен, но «после результата»',v:2},{t:'Стараюсь балансировать, часто компромисс',v:3},{t:'Это один контур: где люди раскрыты — там и рыночная сила',v:4}]},
+    {id:'val_fear', kind:'beh', axis:'X', t:'Насколько вам близок страх «потерять душу при масштабировании»?',
+      hint:'Флагманский триггер ЯВЬ: именно он чаще всего приводит акционера к Самораскрытию.',
+      opts:[{t:'Не думаю об этом',v:1},{t:'Иногда мелькает',v:2},{t:'Да, это реальное беспокойство',v:3},{t:'Это мой главный личный вызов как собственника',v:4}]},
+    {id:'tgt_state', kind:'ctx', axis:null, t:'Каким вы хотите видеть культуру компании через 3 года?',
+      hint:'Инструмент проверит, достижимо ли это прямым переходом из вашего текущего типа.',
+      sel:['Монолит — единая воля, жёсткий контроль','Пирамида — управляемая иерархия','Архив — отлаженный регламент','Кузница — продуктовая машина, скорость и планка','Созвездие — каждый Лидер, смысл и прибыль в одном контуре','Пока не определился(ась)']},
+    {id:'rdy_invest', kind:'scale', axis:'X', t:'Готовность инвестировать в трансформацию культуры',
+      opts:[{t:'Низкая',v:1},{t:'Скорее низкая',v:2},{t:'Средняя',v:3},{t:'Высокая — это приоритет',v:4}]},
+    {id:'rdy_mode', kind:'ctx', axis:null, t:'Какой формат работы с культурой вам ближе?',
+      sel:['Разовая диагностика — «снимок» состояния','Программа трансформации с дорожной картой','Долгое сопровождение и удержание целевого состояния','Сначала диагностика, потом решу']},
+  ]
+},
+];
+
+window.__YAV_EXTEND__ = BLOCKS_EXT;
+
+/* ---------- Мульти-респондентный режим ---------- */
+function addRespondent(){
+  const n=STATE.respondents.length+1;
+  STATE.respondents.push(newRespondent(n));
+  STATE.current=STATE.respondents.length-1;
+  STATE.blockIndex=0;
+  renderBlock();
+  toast('Добавлен новый участник. Разброс ответов команды войдёт в диагноз расслоения.');
+}
+
+/* ============================================================
+   СОСТОЯНИЕ
+   ============================================================ */
+const STATE = {
+  blockIndex:0,
+  respondents:[ newRespondent(1) ],
+  current:0, // индекс активного респондента
+};
+function newRespondent(n){return {id:n, name:'Респондент '+n, role:'', answers:{}}}
+function R(){return STATE.respondents[STATE.current]}
+
+function startSurvey(){
+  document.getElementById('cover').classList.remove('active');
+  document.getElementById('survey').classList.add('active');
+  document.getElementById('topbar').style.display='block';
+  STATE.blockIndex=0;
+  renderBlock();
+  window.scrollTo(0,0);
+}
+
+function allBlocks(){ return BLOCKS.concat(window.__YAV_EXTEND__); }
+
+function renderBlock(){
+  const blocks=allBlocks();
+  const b=blocks[STATE.blockIndex];
+  const host=document.getElementById('blockHost');
+  const totalBlocks=blocks.length;
+  // progress
+  document.getElementById('progFill').style.width=((STATE.blockIndex)/(totalBlocks)*100)+'%';
+  document.getElementById('progLabel').textContent='Блок '+STATE.blockIndex+' из '+(totalBlocks-1);
+  // respondent bar
+  document.getElementById('respName').textContent=R().name;
+  document.getElementById('respRole').textContent=R().role||'роль не указана';
+  document.getElementById('respCount').textContent=STATE.respondents.length+' участник'+plural(STATE.respondents.length);
+
+  let html=`<div class="block-head">
+     <div class="block-kicker"><span class="n">${pad(b.id)}</span> Блок ${b.id} из ${totalBlocks-1}</div>
+     <h2>${b.title}</h2>
+     <div class="block-intro">
+        <p>${b.intro}</p>
+        <div class="facts">
+          <span>📋 <b>${b.qs.length}</b> вопрос${plural2(b.qs.length)}</span>
+          <span>⏱ ≈ <b>${Math.max(3,Math.round(b.qs.length*0.7))}</b> мин</span>
+          <span>🎯 ${b.diag}</span>
+        </div>
+     </div>
+   </div>`;
+
+  b.qs.forEach((q,i)=>{ html+=renderQ(b,q,i); });
+
+  html+=`<div class="block-foot">Ваши ответы в этом блоке формируют <b>${b.remind}</b> в итоговом профиле и дорожной карте.</div>`;
+  host.innerHTML=html;
+
+  // restore answers + bind
+  b.qs.forEach(q=>bindQ(q));
+  updateNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQ(b,q,i){
+  const ans=R().answers;
+  if(q.kind==='ctx'){
+    let o=q.sel.map(s=>`<option ${ans[q.id]===s?'selected':''}>${s}</option>`).join('');
+    return `<div class="q" data-q="${q.id}">
+      <div class="q-head"><div class="q-num">${b.id}.${i+1}</div><div class="q-text">${q.t}</div></div>
+      ${q.hint?`<div class="q-hint">${q.hint}</div>`:''}
+      <div class="field"><select onchange="setAns('${q.id}',this.value)">
+        <option value="" ${!ans[q.id]?'selected':''} disabled>— выберите —</option>${o}
+      </select></div></div>`;
+  }
+  if(q.kind==='multi'){
+    const cur=ans[q.id]||[];
+    let o=q.opts.map((op,k)=>{
+      const on=cur.includes(op.t);
+      return `<label class="opt ${on?'sel':''}" data-opt><input type="checkbox" ${on?'checked':''} onchange="toggleMulti('${q.id}','${esc(op.t)}',this)"><span class="ot">${op.t}</span></label>`;
+    }).join('');
+    return `<div class="q" data-q="${q.id}">
+      <div class="q-head"><div class="q-num">${b.id}.${i+1}</div><div class="q-text">${q.t}</div></div>
+      ${q.hint?`<div class="q-hint">${q.hint}</div>`:''}
+      <div class="opts">${o}</div></div>`;
+  }
+  // beh / scale
+  const cls = q.kind==='scale'?'opts scale-row':'opts';
+  let o=q.opts.map((op,k)=>{
+    const letter=String.fromCharCode(65+k);
+    const on=ans[q.id]===op.v;
+    const tag = q.axis?`<span class="axistag">${q.axis}${op.v}</span>`:'';
+    return `<label class="opt ${on?'sel':''}"><input type="radio" name="${q.id}" ${on?'checked':''} onchange="setAns('${q.id}',${op.v})"><span class="ot">${op.t}</span>${tag}</label>`;
+  }).join('');
+  return `<div class="q" data-q="${q.id}">
+    <div class="q-head"><div class="q-num">${b.id}.${i+1}</div><div class="q-text">${q.t}</div></div>
+    ${q.hint?`<div class="q-hint">${q.hint}</div>`:''}
+    <div class="${cls}">${o}</div></div>`;
+}
+
+function bindQ(q){/* selection styling handled inline; ensure radio sel class */
+  const wrap=document.querySelector(`.q[data-q="${q.id}"]`);
+  if(!wrap)return;
+}
+
+function setAns(id,val){
+  R().answers[id]=val;
+  // refresh selection styles in this question
+  const wrap=document.querySelector(`.q[data-q="${id}"]`);
+  if(wrap){
+    wrap.querySelectorAll('.opt').forEach(l=>{
+      const inp=l.querySelector('input');
+      if(inp&&inp.type==='radio') l.classList.toggle('sel',inp.checked);
+    });
+    wrap.classList.remove('unanswered-flag');
+  }
+  if(id==='ctx_role'){R().role=val; document.getElementById('respRole').textContent=val;}
+  updateNav();
+}
+function toggleMulti(id,val,el){
+  val=unesc(val);
+  let cur=R().answers[id]||[];
+  if(el.checked){ if(!cur.includes(val))cur.push(val); }
+  else { cur=cur.filter(x=>x!==val); }
+  R().answers[id]=cur;
+  el.closest('.opt').classList.toggle('sel',el.checked);
+  updateNav();
+}
+
+function updateNav(){
+  const b=allBlocks()[STATE.blockIndex];
+  const ans=R().answers;
+  let answered=0;
+  b.qs.forEach(q=>{
+    const v=ans[q.id];
+    if(q.kind==='multi'){ if(v&&v.length) answered++; }
+    else if(v!==undefined&&v!=='') answered++;
+  });
+  document.getElementById('answeredCount').textContent=answered+' / '+b.qs.length+' отвечено';
+  document.getElementById('prevBtn').style.visibility = STATE.blockIndex===0?'hidden':'visible';
+  const isLast = STATE.blockIndex===allBlocks().length-1;
+  document.getElementById('nextBtn').textContent = isLast ? 'Сформировать отчёт →' : 'Далее →';
+  saveProgress();
+}
+
+function nextBlock(){
+  const b=allBlocks()[STATE.blockIndex];
+  const ans=R().answers;
+  // soft validation: flag unanswered but allow proceed only if >= 60% answered
+  let answered=0, flagged=[];
+  b.qs.forEach(q=>{
+    const v=ans[q.id];
+    const ok = q.kind==='multi' ? (v&&v.length) : (v!==undefined&&v!=='');
+    if(ok) answered++; else flagged.push(q.id);
+  });
+  if(answered < b.qs.length){
+    flagged.forEach(id=>{const el=document.querySelector(`.q[data-q="${id}"]`);if(el)el.classList.add('unanswered-flag');});
+    if(answered < Math.ceil(b.qs.length*0.6)){
+      const first=document.querySelector('.q.unanswered-flag');
+      if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+      toast('Ответьте хотя бы на большинство вопросов блока, чтобы профиль был достоверным.');
+      return;
+    }
+  }
+  if(STATE.blockIndex===allBlocks().length-1){ buildReport(); return; }
+  STATE.blockIndex++; renderBlock();
+}
+function prevBlock(){ if(STATE.blockIndex>0){STATE.blockIndex--; renderBlock();} }
+
+/* tiny helpers */
+function pad(n){return n<10?'0'+n:''+n}
+function plural(n){const a=n%10,b=n%100;if(a===1&&b!==11)return'';return a>=2&&a<=4&&(b<10||b>=20)?'а':'ов'}
+function plural2(n){const a=n%10,b=n%100;if(a===1&&b!==11)return'';return a>=2&&a<=4&&(b<10||b>=20)?'а':'ов'}
+function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+function unesc(s){return s.replace(/\\'/g,"'").replace(/&quot;/g,'"')}
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';
+    t.style.cssText='position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1F273C;color:#fff;padding:13px 20px;border-radius:10px;font-size:13.5px;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.3);border:1px solid #2A3450;max-width:90%';
+    document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3200);
+}
+
+/* buildReport defined in part 3 */
+function buildReport(){ if(window.__buildReport) window.__buildReport(); else toast('Модуль отчёта ещё загружается…'); }
+
+/* ============================================================
+   ДВИЖОК СКОРИНГА  (прозрачный, проверяемый)
+   Формулы и пороги — по мастер-промту ЯВЬ v2.0.
+   Все калибруемые константы вынесены сюда для отладки методологом.
+   ============================================================ */
+const PCI_FORMULA_VERSION = "1.0";
+const HYBRID_THRESHOLD = 0.15;        // порог гибридности (15% диапазона)
+const PERESHEEK_SD_THRESHOLD = 0.55;  // средний SD по осям → Перешеек
+const PERESHEEK_MINORITY = 0.30;      // ≥30% респондентов в типе, далёком от доминанты ≥2 кластера
+const CRITICAL_Q_WEIGHT = 2;          // вес критического вопроса C3/C4 (id c2)
+const RANGE_MAX = Math.sqrt(3)*3;     // макс. евклидово расстояние в кубе 1..4
+
+function median(arr){
+  if(!arr.length) return null;
+  const s=[...arr].sort((a,b)=>a-b), m=Math.floor(s.length/2);
+  return s.length%2 ? s[m] : (s[m-1]+s[m])/2;
+}
+function mean(arr){return arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : null;}
+function sd(arr){const m=mean(arr); if(m===null)return 0; return Math.sqrt(mean(arr.map(x=>(x-m)**2)));}
+/* взвешенная медиана: значение дублируется пропорционально весу (целочисленные веса) */
+function weightedMedian(pairs){ // pairs: [{v, w}]
+  if(!pairs.length) return null;
+  const expanded=[];
+  pairs.forEach(p=>{const reps=Math.max(1,Math.round(p.w||1)); for(let i=0;i<reps;i++)expanded.push(p.v);});
+  return median(expanded);
+}
+function clamp(x,lo,hi){return Math.max(lo,Math.min(hi,x));}
+function round1(x){return Math.round(x*10)/10;}
+function dist(p,q){return Math.sqrt((p[0]-q[0])**2+(p[1]-q[1])**2+(p[2]-q[2])**2);}
+
+/* ---- Шаг 1: профиль одного респондента ---- */
+function scoreRespondent(resp){
+  const a=resp.answers;
+  const axisPairs={A:[],B:[],C:[]};
+  allBlocks().forEach(b=>b.qs.forEach(q=>{
+    if(['A','B','C'].includes(q.axis)){
+      const v=a[q.id];
+      if(typeof v==='number') axisPairs[q.axis].push({v, w:q.w||1}); // вес критического вопроса задаётся q.w
+    }
+  }));
+  let A=weightedMedian(axisPairs.A), B=weightedMedian(axisPairs.B), C=weightedMedian(axisPairs.C);
+
+  // Критический индикатор C3/C4 (c2 — судьба «невыгодного» человека): если он резко
+  // расходится с медианой оси C, методология требует, чтобы решающий тест был слышен.
+  // Сдвигаем C на треть расстояния к ответу c2 (median устойчива к шуму, но не глуха к ключевому тесту).
+  const c2=a.c2;
+  if(typeof c2==='number' && C!==null){
+    C = C + (c2 - C)/3;
+  }
+
+  // Блок 4 (идиомы): корректирующая поправка к оси C (не переворачивает ось)
+  const idioms={
+    C1:(a.id_supp||[]).length, C2:( (a.id_bur||[]).length + (a.id_chaos||[]).length ),
+    C3:(a.id_inno||[]).length, C4:(a.id_self||[]).length
+  };
+  const idiomPull = (idioms.C4*0.5 + idioms.C3*0.15) - (idioms.C1*0.45 + idioms.C2*0.2);
+  if(C!==null) C = clamp(C + idiomPull*0.15, 1, 4); // мягкая поправка, |Δ| ограничен
+
+  return {
+    A: A!==null?round1(A):null,
+    B: B!==null?round1(B):null,
+    C: C!==null?round1(C):null,
+    nA:axisPairs.A.length, nB:axisPairs.B.length, nC:axisPairs.C.length
+  };
+}
+
+/* ---- Шаг 3–4: отнесение к типу + гибрид ---- */
+function classify(coord){
+  const ranked=CENTROIDS.map(c=>({...c, d:dist(coord,c.coord)})).sort((x,y)=>x.d-y.d);
+  const dom=ranked[0], shadow=ranked[1];
+  // гибрид: разница расстояний до 1-го и 2-го центроида ≤ HYBRID_THRESHOLD * диапазон
+  const hybrid = (shadow.d - dom.d) <= HYBRID_THRESHOLD*RANGE_MAX;
+  return {ranked, dom, shadow, hybrid};
+}
+
+/* ---- Шаг 5: PCI (формула v2.0, прозрачная) ---- */
+function computePCI(A,B,C){
+  if(A===null||B===null||C===null) return {pci:null, penalty:0, penalized:false};
+  const n=v=>(v-1)/3;                 // нормировка 1..4 → 0..1
+  const A_n=n(A), B_n=n(B), C_n=n(C);
+  // базовый PCI: ядро — ось C, A и B — корректоры
+  let pci = 100 * ( C_n * (0.55 + 0.225*A_n + 0.225*B_n) );
+  // штраф за "раскрытие без права инициировать и без координации"
+  let penalty=0, penalized=false;
+  const gap = C_n - Math.min(A_n,B_n);
+  if(gap > 0.35){
+    penalized=true;
+    // штраф 10..20 пунктов пропорционально разрыву (gap 0.35→1.0)
+    penalty = 10 + 10 * clamp((gap-0.35)/(1-0.35),0,1);
+    pci -= penalty;
+  }
+  return {pci: Math.round(clamp(pci,0,100)), penalty: Math.round(penalty), penalized, A_n, B_n, C_n, gap:round1(gap)};
+}
+
+/* ---- Шаг 2 + 6: агрегат и дисперсия по респондентам ---- */
+function aggregate(){
+  const per=STATE.respondents.map(r=>({r, s:scoreRespondent(r)}))
+                .filter(x=>x.s.A!==null||x.s.B!==null||x.s.C!==null);
+  const As=per.map(x=>x.s.A).filter(v=>v!==null);
+  const Bs=per.map(x=>x.s.B).filter(v=>v!==null);
+  const Cs=per.map(x=>x.s.C).filter(v=>v!==null);
+  const A=As.length?round1(median(As)):null, B=Bs.length?round1(median(Bs)):null, C=Cs.length?round1(median(Cs)):null;
+
+  // межреспондентный SD по осям (промт v2.0)
+  const sdA=sd(As), sdB=sd(Bs), sdC=sd(Cs);
+  const meanSD=(sdA+sdB+sdC)/3;
+
+  // вклад блока 5 (внутреннее ощущение расслоения) — как вторичный сигнал
+  const innerVals=STATE.respondents.flatMap(r=>['d1','d2','d3','d4','d5'].map(id=>r.answers[id]).filter(v=>typeof v==='number'));
+  const innerDisp = innerVals.length? (mean(innerVals)-1)/3 : 0; // 0..1
+
+  const coord=[A??2,B??2,C??2];
+  const cls=classify(coord);
+  const pciObj=computePCI(A,B,C);
+
+  // доля респондентов, далёких от доминанты ≥2 кластера (по индексу центроида)
+  const domIdx=CENTROIDS.findIndex(c=>c.key===cls.dom.key);
+  let minorityFar=0;
+  if(per.length>1){
+    per.forEach(x=>{
+      const ci=[x.s.A??2,x.s.B??2,x.s.C??2];
+      const r=classify(ci);
+      const ri=CENTROIDS.findIndex(c=>c.key===r.dom.key);
+      if(Math.abs(ri-domIdx)>=2) minorityFar++;
+    });
+    minorityFar/=per.length;
+  }
+
+  // Перешеек: по среднему SD ИЛИ по доле "далёких" респондентов (промт v2.0)
+  const isthmus = (meanSD >= PERESHEEK_SD_THRESHOLD) || (minorityFar >= PERESHEEK_MINORITY) || (innerDisp>=0.6 && per.length===1);
+
+  // нормированный индекс расслоения для UI (0..1): SD max ≈ 1.5
+  const dispersion = clamp(Math.max(meanSD/1.5, innerDisp*0.85, minorityFar), 0, 1);
+
+  return {per,A,B,C,coord,cls,pci:pciObj.pci,pciObj,dispersion,meanSD,sdA,sdB,sdC,innerDisp,minorityFar,isthmus,
+          stats:{A:axisStats(As),B:axisStats(Bs),C:axisStats(Cs)}};
+}
+function axisStats(arr){
+  if(!arr.length) return {min:null,max:null,med:null,sd:0,n:0};
+  return {min:Math.min(...arr), max:Math.max(...arr), med:round1(median(arr)), sd:round1(sd(arr)), n:arr.length};
+}
+
+/* контекст для интерпретации */
+function ctxOf(){
+  const a=STATE.respondents[0].answers;
+  return {
+    size:a.ctx_size||'', stage:a.ctx_stage||'', reg:a.ctx_reg||'',
+    seg:a.ctx_seg||'', geo:a.ctx_geo||'', shocks:a.ctx_shock||[],
+    target:a.tgt_state||'', fear:a.val_fear, roleVal:a.val_role, contour:a.val_contour,
+    invest:a.rdy_invest, mode:a.rdy_mode, trig:a.dyn_trig||[], drift:a.dyn_drift
+  };
+}
+
+/* ============================================================
+   ЛЕСТНИЦА К САМОРАСКРЫТИЮ — где компания на 5 ступенях
+   ============================================================ */
+function ladderStatus(A,B,C){
+  const steps=[
+    {n:1,name:'Стабилизация координации',sub:'A → A3: держаться продуктом/целью, а не страхом',done:(A>=2.6)},
+    {n:2,name:'Передача права на инициирование',sub:'B → B3: реальная делегированная лицензия',done:(B>=2.6)},
+    {n:3,name:'Переключение режима потенциала',sub:'C3 → C4: пересборка роли вместо замены',done:(C>=3.2)},
+    {n:4,name:'Достройка смысловой координации',sub:'A3 → A4: разделённый смысл сверх продукта',done:(A>=3.4)},
+    {n:5,name:'Институционализация презумпции лидерства',sub:'B3 → B4: лидерство по умолчанию',done:(B>=3.4)},
+  ];
+  const next=steps.find(s=>!s.done);
+  return {steps,next};
+}
+
+/* проверка реалистичности целевого Созвездия */
+function transitionRealism(domKey,target){
+  if(!target||!target.includes('Созвездие')) return null;
+  const blocked=['monolith','pyramid','archive','swell'];
+  if(blocked.includes(domKey)){
+    return {ok:false, msg:'Прямой переход к Созвездию из вашего типа невозможен: C4 требует заранее выстроенных A4 и B4. Маршрут обязан пройти через Кузницу как «базовый лагерь» — сначала продуктовая координация (A3) и распределённая лицензия (B3), затем переключение утилизации в раскрытие.'};
+  }
+  if(domKey==='forge'){
+    return {ok:true, msg:'Вы в естественной точке старта: из Кузницы переход к Созвездию достижим при зрелом лидерстве. Ключевой и самый трудный шаг — переключить «замену» выгоревшего на «пересборку роли» (C3 → C4).'};
+  }
+  return {ok:true, msg:'Целевое состояние достижимо поэтапно — следуйте обязательным ступеням лестницы, не перескакивая.'};
+}
+
+/* ============================================================
+   ОТЧЁТ
+   ============================================================ */
+window.__buildReport=function(){
+  const G=aggregate();
+  const ctx=ctxOf();
+  if(G.A===null&&G.B===null&&G.C===null){ toast('Недостаточно ответов для расчёта профиля.'); return; }
+
+  const domKey = G.isthmus ? 'isthmus' : G.cls.dom.key;
+  const domName = G.isthmus ? 'Перешеек' : G.cls.dom.name;
+  const det = TYPE_DETAIL[domKey];
+  const shadow=G.cls.shadow;
+  const ladder=ladderStatus(G.A??2,G.B??2,G.C??2);
+  const realism=transitionRealism(G.cls.dom.key, ctx.target);
+  const sizeSmall = (ctx.size==='до 15 человек');
+
+  const host=document.getElementById('reportHost');
+  host.innerHTML = reportHTML(G,ctx,domKey,domName,det,shadow,ladder,realism,sizeSmall);
+
+  document.getElementById('survey').classList.remove('active');
+  document.getElementById('report').classList.add('active');
+  document.getElementById('progFill').style.width='100%';
+  document.getElementById('progLabel').textContent='Отчёт готов';
+  window.scrollTo(0,0);
+
+  // draw visuals after DOM is in place
+  drawProjection(G);
+  drawRadar(G);
+  drawHeatmap(G);
+  try{ const code=reportCode(); if(location.hash.slice(1)!==code) location.replace('#'+code); }catch(e){}
+};
+
+function fmtCoord(v){return v===null?'—':v.toFixed(1);}
+function pciBand(p){
+  if(p===null)return{label:'—',color:'var(--text-dim)'};
+  if(p<25)return{label:'Критически низкий',color:'var(--c1)'};
+  if(p<45)return{label:'Низкий',color:'var(--c2)'};
+  if(p<65)return{label:'Средний',color:'var(--c3)'};
+  if(p<82)return{label:'Высокий',color:'var(--c4)'};
+  return{label:'Превосходный',color:'var(--gold)'};
+}
+
+/* ============================================================
+   ГЕНЕРАТОРЫ СМЫСЛОВОЙ ИНТЕРПРЕТАЦИИ
+   читают фактические координаты и складывают в связный диагноз
+   ============================================================ */
+function axisLabel(axis,v){
+  if(v===null) return 'нет данных';
+  const L={
+    A:[[1.5,'принуждение и страх (A1)'],[2.5,'безличный регламент (A2)'],[3.5,'продукт и данные (A3)'],[5,'разделённый смысл (A4)']],
+    B:[[1.5,'монополия вершины (B1)'],[2.5,'разрешительная диффузия (B2)'],[3.5,'распределённая лицензия (B3)'],[5,'презумпция лидерства (B4)']],
+    C:[[1.5,'подавление уникальности (C1)'],[2.5,'игнорирование (C2)'],[3.5,'утилизация ради продукта (C3)'],[5,'раскрытие как источник стоимости (C4)']]
+  };
+  return (L[axis].find(([t])=>v<t)||L[axis][3])[1];
+}
+/* развёрнутый диагноз: 3–4 абзаца, читающие реальные значения */
+function deepNarrative(G,ctx,domKey){
+  const A=G.A,B=G.B,C=G.C, t=TYPE_BRIEF.find(x=>x.key===domKey)||TYPE_BRIEF.find(x=>x.key===G.cls.dom.key);
+  const p=[];
+  // абзац 1 — что показывает координата
+  p.push(`Координата вашей компании — <b class="mono">${fmtCoord(A)}·${fmtCoord(B)}·${fmtCoord(C)}</b>. Порядок у вас держится прежде всего на том, что методология описывает как «${axisLabel('A',A)}»; право начать действие распределено по логике «${axisLabel('B',B)}»; а с уникальностью человека система обходится в режиме «${axisLabel('C',C)}». Именно последняя ось — стержневая: она определяет, превращается ли потенциал людей в стоимость или гасится по дороге.`);
+  // абзац 2 — что это значит для бизнеса (тип)
+  p.push(`Ближайший устойчивый тип — <b>${t.name}</b>${G.isthmus?' (но профиль расслоен, см. ниже)':''}. ${t.essence} Для бизнеса это значит конкретную развилку: <b>возможность</b> — ${t.opp.toLowerCase()} <b>Риск</b> — ${t.risk.toLowerCase()}`);
+  // абзац 3 — PCI и его смысл
+  const band=pciBand(G.pci);
+  let pciPara=`Индекс конвертации потенциала <b>PCI = ${G.pci}</b> (${band.label.toLowerCase()}). Это оценка того, какую долю заложенного в людях потенциала система реально переводит в результат.`;
+  if(G.pciObj.penalized){
+    pciPara+=` Важная деталь: индекс снижен на ${G.pciObj.penalty} пункт(ов) из-за рассогласования — режим конвертации (C) опережает право на инициирование (B) и источник координации (A). На практике это «раскрытие на словах»: людям разрешают проявляться, но не дают реально начинать действие, поэтому проявленность не конвертируется в стоимость.`;
+  } else if(C!==null && Math.min(A,B)>=C-0.3){
+    pciPara+=` Оси согласованы: режим работы с людьми подкреплён правом инициировать и источником координации — потенциал не «застревает» на полпути.`;
+  }
+  p.push(pciPara);
+  // абзац 4 — теневой тип и динамика
+  const drift={1:'вниз — к подавлению и страху',2:'вниз — к безразличию и выгоранию',3:'без выраженного вектора',4:'вверх — к раскрытию и инициативе'}[ctx.drift]||'не определён по ответам';
+  p.push(`Теневой тип — <b>${G.cls.shadow.name}</b>: именно туда систему тянет под давлением, если не удерживать её осознанно (${det0(domKey).degrade}). За последние 12 месяцев культура, по вашей оценке, дрейфовала ${drift}. ${shocksLine(ctx)}`);
+  return p;
+}
+function det0(key){return TYPE_DETAIL[key]||TYPE_DETAIL[ (CENTROIDS.find(()=>false)||{}).key ]||{degrade:'—'};}
+function shocksLine(ctx){
+  if(!ctx.shocks||!ctx.shocks.length||ctx.shocks.includes('Ничего из перечисленного')) return 'Сильных культурных шоков за период вы не отметили — окно для спокойной, неавральной работы над культурой.';
+  const map={'Быстрый рост / масштабирование':'рост тянет вниз по оси C, если его не сопровождать осознанным удержанием','Кризис / резкое сжатие':'кризис централизует власть и толкает к подавлению','Смена CEO':'смена первого лица — самый мощный двунаправленный триггер: может и поднять, и обрушить','M&A / поглощение / слияние':'M&A почти всегда создаёт Перешеек','IPO / приход институционального капитала':'институциональный капитал давит к Архиву/Пирамиде через комплаенс','Выход или отход основателя':'выход основателя убирает несущую опору — риск Зыби или схлопывания в Пирамиду','Поколенческая смена в команде':'поколенческий запрос на смысл и инициативу — окно для движения вверх','Усиление регуляторного давления':'регуляторное давление толкает к Архиву/Пирамиде'};
+  const named=ctx.shocks.filter(s=>map[s]).map(s=>map[s]);
+  return 'Активные триггеры заслуживают внимания: '+named.join('; ')+'.';
+}
+/* расширенная карточка типа — бизнес-разбор доминанты и тени */
+function typeBusinessRead(domKey,shadowKey){
+  const d=TYPE_BRIEF.find(x=>x.key===domKey), s=TYPE_BRIEF.find(x=>x.key===shadowKey);
+  return {dom:d, shadow:s};
+}
+
+/* ИТОГОВЫЕ ВЫВОДЫ — одностраничный синтез */
+function finalFindings(G,ctx,domKey,road,ladder){
+  const t=TYPE_BRIEF.find(x=>x.key===domKey)||TYPE_BRIEF.find(x=>x.key===G.cls.dom.key);
+  // решающее наблюдение
+  let decisive;
+  if(G.isthmus) decisive='Культура расслоена — вы управляете не одной компанией, а несколькими контурами в разных режимах. До любой трансформации нужна посегментная картина.';
+  else if(G.pciObj.penalized) decisive='Главный разрыв — между декларируемым раскрытием и реальным правом действовать. Проявленность есть, но она не конвертируется: люди не могут начинать без санкции сверху.';
+  else if(G.C!==null && G.C<2.2) decisive='Уникальность людей сейчас системно гасится — это прямой вычет из стоимости компании, а не «вопрос атмосферы».';
+  else if(G.C!==null && G.C>=2.5 && G.C<3.4) decisive='Вы в продуктовом режиме (Кузница): мощный двигатель стоимости, но он работает на выжигании носителей. Ключевая развилка — научиться пересобирать роль вместо замены.';
+  else if(G.C!==null && G.C>=3.4) decisive='Вы близки к флагманскому режиму. Задача смещается от «дорасти» к «удержать»: Созвездие деградирует в Кузницу первым же при ослаблении внимания.';
+  else decisive='Профиль умеренный; решающий рычаг — синхронизировать право на инициирование (B) с режимом работы с людьми (C).';
+  // главный риск / возможность
+  const risk = G.isthmus ? 'Расслоение застынет, и сильный контур деградирует к слабому соседнему типу.' : t.risk;
+  const opp  = t.opp;
+  // первый шаг
+  const firstStep = (road.horizons[0].items[0]||{task:'Закрепить сильные практики как стандарт.'}).task;
+  const firstAxis = (road.horizons[0].items[0]||{axis:'C'}).axis;
+  return {t, decisive, risk, opp, firstStep, firstAxis,
+    nextRung: ladder.next, route:road.routeLine};
+}
+
+function reportHTML(G,ctx,domKey,domName,det,shadow,ladder,realism,sizeSmall){
+  const band=pciBand(G.pci);
+  const hybridLine = G.isthmus
+    ? `Профиль расслоен: высокая дисперсия координат указывает на тип <b>Перешеек</b> — компания в активном переходе, разные контуры живут в разных режимах.`
+    : (G.cls.hybrid
+        ? `Доминанта <b>${G.cls.dom.name}</b> с близким теневым типом <b>${shadow.name}</b> — это гибрид «${G.cls.dom.name} с контуром ${shadow.name}».`
+        : `Доминирующий тип — <b>${G.cls.dom.name}</b>; теневой (куда тянет деградация) — <b>${shadow.name}</b>.`);
+
+  const driftMap={1:'вниз, к подавлению и страху',2:'вниз, к безразличию и выгоранию',3:'без выраженного вектора',4:'вверх, к раскрытию и инициативе'};
+
+  // roadmap derive
+  const road=deriveRoadmap(G,ctx,domKey);
+
+  return `
+  <!-- screen controls (hidden in print) -->
+  <div class="rep-controls noprint">
+    <button class="btn btn-outline" onclick="backToSurvey()">← Вернуться к опросу</button>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="addRespondent()">+ Добавить участника</button>
+      <button class="btn btn-gold" onclick="exportPDF(this)">⤓ Экспорт в PDF</button>
+    </div>
+  </div>
+
+  <div class="share-box">
+    <h3>${STATE.fromLink?'Отчёт открыт по ссылке':'Сохраните ссылку на свой отчёт'}</h3>
+    <p>По этой ссылке отчёт откроется на любом устройстве — телефоне или компьютере. Отправьте её себе на почту или в мессенджер. Ответы хранятся только в самой ссылке и никуда не передаются.</p>
+    <div class="share-row"><input id="repLink" readonly value="${reportLink()}" onclick="this.select()" aria-label="Ссылка на отчёт"><button class="btn btn-gold" onclick="copyReportLink(this)">Скопировать ссылку</button></div>
+    <p style="margin:10px 0 0;font-size:12.5px">Обсудить результат с автором методологии: <a href="https://t.me/BODDHISN" target="_blank" rel="noopener">t.me/BODDHISN</a></p>
+  </div>
+
+  <article class="report">
+    <!-- R0 METHODOLOGY PRIMER -->
+    <section class="primer">
+      <div class="primer-mark"><span class="serif">ЯВЬ</span><sup>™</sup> · Карта конвертации потенциала</div>
+      <h2 class="serif primer-h">Как читать этот отчёт за две минуты</h2>
+      <p class="primer-lead">ЯВЬ рассматривает компанию как машину, которая превращает потенциал людей в рыночную стоимость, и измеряет КПД этой машины. Диагноз строится не на том, что компания о себе декларирует, а на том, что реально происходит с уникальностью человека в момент столкновения с системой: подавляется она, игнорируется, выжимается ради продукта — или становится источником и смысла, и прибыли одновременно.</p>
+
+      <div class="primer-axes">
+        <div class="pa"><span class="pa-l">A</span><div><b>Источник координации</b><p>Чем держится порядок: страхом, регламентом, продуктом или разделённым смыслом.</p></div></div>
+        <div class="pa"><span class="pa-l">B</span><div><b>Геометрия власти</b><p>С какого уровня можно начать действие, не спрашивая разрешения — и что за это будет.</p></div></div>
+        <div class="pa"><span class="pa-l">C</span><div><b>Режим конвертации</b><p>Что система делает с уникальностью человека. Стержневая ось — из неё рождается индекс PCI.</p></div></div>
+      </div>
+
+      <h3 class="primer-sub">Четыре режима и семь типов культуры</h3>
+      <p class="primer-note">Светофор обозначает <b>режимы</b>, а не оценку «плохо–хорошо»: у каждого типа есть и сильная сторона, и системный риск. Задача диагностики — не осудить тип, а показать его цену и маршрут.</p>
+
+      <div class="atlas">
+        ${TYPE_BRIEF.filter(t=>t.key!=='isthmus').map(t=>{
+          const cl = t.cluster==='Подавление'?'cl-c1':t.cluster==='Безразличие'?'cl-c2':t.cluster==='Инновации'?'cl-c3':t.cluster==='Самораскрытие'?'cl-c4':'cl-x';
+          const isDom = t.key===domKey || t.key===G.cls.dom.key;
+          return `<div class="atlas-card ${cl} ${isDom?'is-dom':''}">
+            <div class="ac-head"><span class="ac-name serif">${t.name}</span><span class="ac-code mono">${t.code}</span></div>
+            <div class="ac-cluster">${t.cluster} · ${t.sub}</div>
+            <p class="ac-ess">${t.essence}</p>
+            <div class="ac-ro"><span class="ac-opp">▲ ${t.opp}</span><span class="ac-risk">▼ ${t.risk}</span></div>
+            ${isDom?'<div class="ac-badge">ваш профиль</div>':''}
+          </div>`;
+        }).join('')}
+        <div class="atlas-card cl-x ${G.isthmus?'is-dom':''}">
+          <div class="ac-head"><span class="ac-name serif">Перешеек</span><span class="ac-code mono">смешанный</span></div>
+          <div class="ac-cluster">Переход · гибрид</div>
+          <p class="ac-ess">${TYPE_BRIEF.find(t=>t.key==='isthmus').essence}</p>
+          <div class="ac-ro"><span class="ac-opp">▲ ${TYPE_BRIEF.find(t=>t.key==='isthmus').opp}</span><span class="ac-risk">▼ ${TYPE_BRIEF.find(t=>t.key==='isthmus').risk}</span></div>
+          ${G.isthmus?'<div class="ac-badge">ваш профиль</div>':''}
+        </div>
+      </div>
+      <p class="primer-foot">Флагман модели — <b>Созвездие</b>: единственный режим, где максимальная проявленность человека и максимальная рыночная сила компании сведены в один контур. Подъём вверх медленный и идёт почти всегда через Кузницу как «базовый лагерь»; деградация вниз — быстрая и спонтанная.</p>
+    </section>
+
+    <!-- R1 EXECUTIVE SUMMARY -->
+    <header class="rep-cover">
+      <div class="rep-cover-mark"><span class="serif">ЯВЬ</span><sup>™</sup></div>
+      <div class="rep-eyebrow">Диагностический профиль корпоративной культуры</div>
+      <h1 class="serif">${domName}${G.cls.hybrid&&!G.isthmus?` · гибрид с типом ${shadow.name}`:''}</h1>
+      <div class="rep-context">${ctx.seg||'Компания в целом'} · ${ctx.size||'размер не указан'} · ${ctx.stage||''}</div>
+
+      <div class="summary-grid">
+        <div class="sum-card">
+          <div class="sum-k">Координата A·B·C</div>
+          <div class="sum-v mono">${fmtCoord(G.A)} · ${fmtCoord(G.B)} · ${fmtCoord(G.C)}</div>
+          <div class="sum-sub">координация · власть · конвертация</div>
+        </div>
+        <div class="sum-card pci">
+          <div class="sum-k">PCI · индекс конвертации потенциала</div>
+          <div class="sum-v" style="color:${band.color}">${G.pci===null?'—':G.pci}<small>/100</small></div>
+          <div class="sum-sub">${band.label}</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-k">Теневой тип</div>
+          <div class="sum-v serif" style="font-size:30px">${shadow.name}</div>
+          <div class="sum-sub">куда тянет под давлением</div>
+        </div>
+      </div>
+
+      <div class="verdict">${hybridLine}</div>
+      ${G.pciObj.penalized?`<div class="pci-penalty">PCI снижен на <b>${G.pciObj.penalty}</b> пункт(ов): зафиксировано «раскрытие без права инициировать» — координата C опережает A и B на ${G.pciObj.gap} (порог 0.35). По методологии ЯВЬ раскрытие, не подкреплённое реальным правом начинать действие и смысловой координацией, не конвертируется в стоимость и не засчитывается полностью.</div>`:''}
+      <div class="here-there">
+        <div><span class="dot here"></span><b>Вы здесь:</b> ${domName} · A·B·C ${fmtCoord(G.A)}·${fmtCoord(G.B)}·${fmtCoord(G.C)}</div>
+        <div><span class="dot drift"></span><b>Тянет туда:</b> ${shadow.name} (деградация: ${det.degrade})</div>
+        <div><span class="dot goal"></span><b>Целевой маршрут:</b> ${road.routeLine}</div>
+      </div>
+      ${sizeSmall?`<div class="warn">⚠ Компания до 15 человек: «культура» ещё не институционализирована. Инструмент диагностирует <b>траекторию</b>, а не устойчивое состояние — читайте профиль как направление, не как диагноз.</div>`:''}
+    </header>
+
+    <!-- R1.5 DEEP NARRATIVE -->
+    <section class="rep-sec narrative-sec">
+      <div class="sec-h"><span class="sec-n">01</span><h2>Что показывают ваши ответы</h2></div>
+      ${deepNarrative(G,ctx,domKey).map(par=>`<p class="narr">${par}</p>`).join('')}
+    </section>
+
+    <!-- R2 3D PROJECTION -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">02</span><h2>Профиль в пространстве осей</h2></div>
+      <p class="sec-lead">Компания как точка в кубе A·B·C среди семи типов-аттракторов. Стрелка показывает вектор деградации к теневому типу и целевой вектор к Созвездию.</p>
+      <div class="viz-card"><svg id="svgProj" viewBox="0 0 760 420" class="viz"></svg></div>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>ваша компания</span>
+        <span><i style="background:#9aa3ba"></i>типы-аттракторы</span>
+        <span><i style="background:var(--c1)"></i>вектор деградации</span>
+        <span><i style="background:var(--c4)"></i>целевой вектор</span>
+      </div>
+    </section>
+
+    <!-- R3 RADAR -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">03</span><h2>Радар по трём осям</h2></div>
+      <p class="sec-lead">Текущее состояние против целевого ориентира Созвездия. Чем ближе контур к внешнему краю, тем выше полюс оси.</p>
+      <div class="viz-card"><svg id="svgRadar" viewBox="0 0 460 380" class="viz"></svg></div>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>текущее</span>
+        <span><i style="background:rgba(21,101,192,.35)"></i>целевой ориентир (Созвездие)</span>
+      </div>
+    </section>
+
+    <!-- R4 HEATMAP -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">04</span><h2>Тепловая карта расслоения</h2></div>
+      <p class="sec-lead">Строки — участники опроса (или сегменты), столбцы — оси. Резкий разброс цвета по строкам — признак «двух компаний в одной» (тип Перешеек).</p>
+      <div class="viz-card"><svg id="svgHeat" viewBox="0 0 620 ${80+STATE.respondents.length*46}" class="viz"></svg></div>
+      ${STATE.respondents.length>1?`<div class="disp-table">
+        <div class="dt-row dt-head"><span>Ось</span><span>мин</span><span>медиана</span><span>макс</span><span>SD</span></div>
+        ${['A','B','C'].map(k=>{const st=G.stats[k];return `<div class="dt-row"><span><b>${k}</b></span><span>${st.min??'—'}</span><span>${st.med??'—'}</span><span>${st.max??'—'}</span><span class="${st.sd>=PERESHEEK_SD_THRESHOLD?'sd-hot':''}">${st.sd}</span></div>`;}).join('')}
+      </div>`:''}
+      <div class="disp-note">Индекс расслоения: <b>${Math.round(G.dispersion*100)}%</b> · средний SD по осям <b>${G.meanSD.toFixed(2)}</b> ${G.isthmus?`— превышает порог Перешейка (${PERESHEEK_SD_THRESHOLD}): показана посегментная картина, тип отнесён к Перешейку.`:'— в пределах нормы для единого контура.'}</div>
+    </section>
+
+    <!-- R5 TYPE CARD -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">05</span><h2>Карточка типа: ${domName}</h2></div>
+      <p class="sec-lead">Доминанта <b>${typeBusinessRead(domKey,G.cls.shadow.key).dom.name}</b> определяет, как компания работает сегодня; теневой тип <b>${G.cls.shadow.name}</b> — это «вторая натура», проступающая под давлением. Понимать обе важно: первая описывает текущую механику стоимости, вторая — направление срыва.</p>
+      <div class="type-grid">
+        <div class="type-col">
+          <h4>Диагностические признаки</h4>
+          <ul class="ticks">${det.signs.map(s=>`<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="type-col good">
+          <h4>Сильные стороны</h4>
+          <p>${det.strengths}</p>
+        </div>
+        <div class="type-col bad">
+          <h4>Системные риски / патологии</h4>
+          <p>${det.risks}</p>
+        </div>
+        <div class="type-col warn-col">
+          <h4>Ловушка деградации</h4>
+          <p>${det.degrade}</p>
+        </div>
+      </div>
+      <div class="shadow-read">
+        <h4>Теневой тип «${G.cls.shadow.name}» — что это означает на практике</h4>
+        <p>${typeBusinessRead(domKey,G.cls.shadow.key).shadow.essence} Под давлением (кризис, перегруз ростом, смена первого лица) система склонна соскальзывать именно сюда. Главный риск этого сценария: ${typeBusinessRead(domKey,G.cls.shadow.key).shadow.risk.toLowerCase()} Ранний сигнал — отслеживайте его, чтобы заметить дрейф до того, как он закрепится.</p>
+      </div>
+    </section>
+
+    <!-- R6 LADDER -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">06</span><h2>Лестница к Самораскрытию</h2></div>
+      <p class="sec-lead">Пять обязательных ступеней. Их нельзя перескочить: каждая следующая опирается на предыдущую. ${ladder.next?`Ваша ближайшая ступень — <b>№${ladder.next.n}: ${ladder.next.name}</b>.`:'Все ступени пройдены — задача в удержании состояния.'}</p>
+      <div class="ladder">
+        ${ladder.steps.map(s=>`
+          <div class="rung ${s.done?'done':'todo'} ${ladder.next&&ladder.next.n===s.n?'nextrung':''}">
+            <div class="rung-n">${s.done?'✓':s.n}</div>
+            <div><div class="rung-name">${s.name}</div><div class="rung-sub mono">${s.sub}</div></div>
+            ${ladder.next&&ladder.next.n===s.n?'<span class="rung-tag">ближайшая</span>':''}
+          </div>`).join('')}
+      </div>
+      ${realism?`<div class="realism ${realism.ok?'ok':'block'}">${realism.ok?'✓':'⚠'} ${realism.msg}</div>`:''}
+    </section>
+
+    <!-- R7 ROADMAP -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">07</span><h2>Дорожная карта трансформации</h2></div>
+      <p class="sec-lead">Три горизонта. Маршрут почти всегда идёт через Кузницу как базовый лагерь. По каждой инициативе — ось воздействия и метрика-веха.</p>
+      <div class="horizons">
+        ${road.horizons.map(h=>`
+          <div class="horizon">
+            <div class="hz-head"><span class="hz-when">${h.when}</span><h4>${h.title}</h4></div>
+            ${h.items.map(it=>`
+              <div class="hz-item">
+                <span class="axis-pill axis-${it.axis.toLowerCase()}">${it.axis}</span>
+                <div><div class="hz-task">${it.task}</div><div class="hz-kpi mono">веха: ${it.kpi}</div></div>
+              </div>`).join('')}
+          </div>`).join('')}
+      </div>
+    </section>
+
+    <!-- R8 VALUES + ETHICS -->
+    <section class="rep-sec">
+      <div class="sec-h"><span class="sec-n">08</span><h2>Смыслы собственника и этический протокол</h2></div>
+      <div class="values">${valuesNarrative(G,ctx,domKey)}</div>
+      <div class="ethics">
+        <h4>Этические границы методологии ЯВЬ™</h4>
+        <ul>
+          <li><b>Самораскрытие нельзя навязать сверху.</b> Директивное «внедрение C4» — внутреннее противоречие: принуждение к раскрытию само есть форма подавления. Инструмент создаёт условия, а не производит раскрытие приказом.</li>
+          <li><b>Диагностика описывает систему, а не людей.</b> Профиль и индикаторы запрещено использовать для кадровых решений или санкций против конкретных сотрудников — это разрушает доверие и искажает последующие замеры.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ИТОГОВЫЕ ВЫВОДЫ — одностраничный синтез -->
+    ${(()=>{ const F=finalFindings(G,ctx,domKey,road,ladder); const band2=pciBand(G.pci); return `
+    <section class="findings">
+      <div class="findings-head">
+        <div class="fh-eyebrow">ЯВЬ™ · Итоговые выводы</div>
+        <h2 class="serif">${domName}${G.cls.hybrid&&!G.isthmus?` · гибрид с ${shadow.name}`:''}</h2>
+        <div class="fh-coord"><span class="mono">${fmtCoord(G.A)}·${fmtCoord(G.B)}·${fmtCoord(G.C)}</span><span class="fh-pci" style="color:${band2.color}">PCI ${G.pci}<small>/100</small></span></div>
+      </div>
+
+      <div class="findings-decisive">
+        <div class="fd-label">Решающее наблюдение</div>
+        <p>${F.decisive}</p>
+      </div>
+
+      <div class="findings-grid">
+        <div class="fcard fcard-opp">
+          <div class="fc-icon">▲</div>
+          <div class="fc-title">Главная возможность</div>
+          <p>${F.opp}</p>
+        </div>
+        <div class="fcard fcard-risk">
+          <div class="fc-icon">▼</div>
+          <div class="fc-title">Главный риск</div>
+          <p>${F.risk}</p>
+        </div>
+        <div class="fcard fcard-now">
+          <div class="fc-icon">→</div>
+          <div class="fc-title">Где вы сейчас</div>
+          <p>Тип <b>${domName}</b>; тянет к <b>${shadow.name}</b>. Дрейф за год: ${({1:'вниз к подавлению',2:'вниз к безразличию',3:'без вектора',4:'вверх к раскрытию'}[ctx.drift]||'не указан')}.</p>
+        </div>
+        <div class="fcard fcard-step">
+          <div class="fc-icon">①</div>
+          <div class="fc-title">Первый шаг</div>
+          <p><span class="step-axis axis-${F.firstAxis.toLowerCase()}">ось ${F.firstAxis}</span> ${F.firstStep}</p>
+        </div>
+      </div>
+
+      <div class="findings-route">
+        <div class="fr-label">Реалистичный маршрут</div>
+        <div class="fr-path">${F.route}</div>
+        ${F.nextRung?`<div class="fr-rung">Ближайшая обязательная ступень: <b>№${F.nextRung.n} — ${F.nextRung.name}</b></div>`:`<div class="fr-rung">Все ступени пройдены — фокус смещается на удержание состояния.</div>`}
+      </div>
+
+      <div class="findings-foot">
+        <span>Методология <b>ЯВЬ™</b> © Сергей Новосад, 2026</span>
+        <span class="mono">Карта конвертации потенциала · ${new Date().toLocaleDateString('ru-RU')}</span>
+      </div>
+    </section>`;})()}
+
+    <footer class="rep-foot">
+      <div>Методология <b>ЯВЬ™</b> © Сергей Новосад, 2026 · VPC-модель, типы-аттракторы, поведенческие индикаторы и индекс PCI — авторская интеллектуальная собственность. Коммерческое применение и производные продукты — по лицензионному соглашению с автором.</div>
+      <div class="mono">novosadmsk@gmail.com · ЯВЬ™ v1.0 · Confidential — Proprietary IP</div>
+    </footer>
+  </article>`;
+}
+
+/* ---------- Экспорт отчёта в PDF ---------- */
+async function exportPDF(btn){
+  const el=document.querySelector('#reportHost .report'); if(!el) return;
+  const old=btn.textContent; btn.disabled=true; btn.textContent='Готовлю PDF…';
+  try{
+    el.querySelectorAll('svg.viz').forEach(v=>{const r=v.getBoundingClientRect(); if(r.width){v.setAttribute('width',Math.round(r.width)); v.setAttribute('height',Math.round(r.height));}});
+    const root=getComputedStyle(document.documentElement);
+    el.querySelectorAll('svg *').forEach(n=>{['fill','stroke'].forEach(a=>{const v=n.getAttribute(a); if(v&&v.indexOf('var(')>-1){const m=v.match(/var\((--[\w-]+)\)/); if(m){n.setAttribute(a,(root.getPropertyValue(m[1])||'').trim()||'#888888');}}});});
+    let dl=null;
+    try{ dl=(window.claude&&window.claude.use)? await window.claude.use('downloads') : null; }catch(e){ dl=null; }
+    if(!dl||typeof html2pdf==='undefined'){ window.print(); toast('Если окно печати не открылось, экспорт недоступен в этом просмотре.'); return; }
+    const date=new Date().toISOString().slice(0,10);
+    const blob=await html2pdf().set({
+      margin:[8,8,8,8],
+      image:{type:'jpeg',quality:0.95},
+      html2canvas:{scale:1.6,useCORS:true,backgroundColor:'#ffffff',onclone:d=>{const st=d.createElement('style');st.textContent='.rep-cover,.findings{background:#0E1320 !important}';d.head.appendChild(st);}},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+      pagebreak:{mode:['css','legacy'],avoid:['.viz-card','.atlas-card','.fcard','.rung','.hz-item','.type-col','.sum-card','.horizon','.shadow-read','.pa','.findings-decisive','.findings-route']}
+    }).from(el).outputPdf('blob');
+    await dl.save({filename:'YAV_audit_kultury_'+date+'.pdf', data:blob});
+    toast('PDF сохранён');
+  }catch(e){
+    const c=e&&e.code;
+    if(c==='declined') toast('Сохранение отменено');
+    else if(c==='rate_limited') toast('Окно сохранения уже открыто — подождите несколько секунд');
+    else toast('Не удалось сформировать PDF: '+((e&&e.message)||c||'ошибка'));
+  }finally{ btn.disabled=false; btn.textContent=old; }
+}
+
+/* ---------- Прогресс, ссылка на отчёт, сводный отчёт группы ---------- */
+const PROGRESS_KEY='yav-audit-progress-v1';
+const ARTIFACT_URL='https://claude.ai/artifact/LX9XaUrv2tRKGuXABa7Jtm';
+const B36='0123456789abcdefghijklmnopqrstuvwxyz';
+function saveProgress(){ try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify({respondents:STATE.respondents,current:STATE.current,blockIndex:STATE.blockIndex})); }catch(e){} }
+function loadProgress(){ try{ const s=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'null'); if(s&&Array.isArray(s.respondents)&&s.respondents.some(r=>r&&r.answers&&Object.keys(r.answers).length)) return s; }catch(e){} return null; }
+function clearProgress(){ try{ localStorage.removeItem(PROGRESS_KEY); }catch(e){} }
+function startFresh(){ clearProgress(); STATE.respondents=[newRespondent(1)]; STATE.current=0; STATE.fromLink=false; startSurvey(); }
+function resumeSurvey(){
+  const s=loadProgress(); if(!s){ startFresh(); return; }
+  STATE.respondents=s.respondents; STATE.current=Math.min(s.current||0,s.respondents.length-1); STATE.fromLink=false;
+  document.getElementById('cover').classList.remove('active');
+  document.getElementById('survey').classList.add('active');
+  document.getElementById('topbar').style.display='block';
+  STATE.blockIndex=Math.min(s.blockIndex||0, allBlocks().length-1); renderBlock(); window.scrollTo(0,0);
+}
+function allQs(){ return allBlocks().flatMap(b=>b.qs); }
+function encodeResp(r){
+  const a=r.answers||{};
+  return allQs().map(q=>{
+    const v=a[q.id];
+    if(q.kind==='ctx'){ const i=q.sel.indexOf(v); return B36[i+1]||'0'; }
+    if(q.kind==='multi'){ let m=0; (v||[]).forEach(t=>{const i=q.opts.findIndex(o=>o.t===t); if(i>=0) m|=(1<<i);}); return B36[Math.floor(m/36)]+B36[m%36]; }
+    return (typeof v==='number'&&v>=1&&v<=4)? String(v) : '0';
+  }).join('');
+}
+function decodeResp(s,n){
+  const r=newRespondent(n); let p=0;
+  for(const q of allQs()){
+    if(q.kind==='multi'){
+      if(p+1>=s.length) return null;
+      const m=B36.indexOf(s[p])*36+B36.indexOf(s[p+1]); p+=2;
+      if(m>0) r.answers[q.id]=q.opts.filter((o,i)=>m&(1<<i)).map(o=>o.t);
+      continue;
+    }
+    const k=B36.indexOf(s[p++]); if(k<0) return null;
+    if(q.kind==='ctx'){ if(k>0&&q.sel[k-1]) r.answers[q.id]=q.sel[k-1]; }
+    else if(k>=1&&k<=4) r.answers[q.id]=k;
+  }
+  if(p!==s.length) return null;
+  r.role=r.answers.ctx_role||'';
+  return r;
+}
+function reportCode(){ return 'r1-'+STATE.respondents.map(encodeResp).join('-'); }
+function reportLink(){ let inFrame=false; try{ inFrame=(window.top!==window.self); }catch(e){ inFrame=true; } const base=(inFrame && location.protocol!=='file:')? ARTIFACT_URL : location.href.split('#')[0]; return base+'#'+reportCode(); }
+function parseCodes(text){
+  const out=[];
+  ((text||'').match(/r1-[0-9a-z-]+/g)||[]).forEach(c=>c.slice(3).split('-').forEach(part=>{ if(part){ const r=decodeResp(part,out.length+1); if(r) out.push(r); } }));
+  return out;
+}
+function showReportFor(rs){
+  STATE.respondents=rs; STATE.current=0;
+  document.getElementById('cover').classList.remove('active');
+  document.getElementById('survey').classList.remove('active');
+  document.getElementById('topbar').style.display='block';
+  window.__buildReport();
+}
+function copyReportLink(btn){
+  const inp=document.getElementById('repLink'); if(!inp) return;
+  const done=()=>{ btn.textContent='Скопировано ✓'; setTimeout(()=>{btn.textContent='Скопировать ссылку';},2500); };
+  const manual=()=>{ inp.focus(); inp.select(); toast('Выделите ссылку и скопируйте её вручную'); };
+  try{ navigator.clipboard.writeText(inp.value).then(done).catch(manual); }catch(e){ manual(); }
+}
+function toggleGroup(){ const g=document.getElementById('groupPanel'); g.hidden=!g.hidden; if(!g.hidden) document.getElementById('groupInput').focus(); }
+function buildGroup(){
+  const rs=parseCodes(document.getElementById('groupInput').value);
+  const msg=document.getElementById('groupMsg');
+  if(!rs.length){ msg.textContent='Не нашёл ни одной ссылки на отчёт. Ссылка должна содержать фрагмент «#r1-».'; return; }
+  rs.forEach((r,i)=>{ r.name='Участник '+(i+1); });
+  STATE.fromLink=true; msg.textContent='';
+  showReportFor(rs);
+  toast('Собрано отчётов участников: '+rs.length);
+}
+
+function backToSurvey(){
+  document.getElementById('report').classList.remove('active');
+  document.getElementById('survey').classList.add('active');
+  renderBlock();
+}
+
+/* narrative for values, simple rules */
+function valuesNarrative(G,ctx,domKey){
+  const wantSelf = (ctx.contour===4)||(ctx.roleVal===4);
+  const fear = ctx.fear>=3;
+  const conflictC1 = (G.C!==null&&G.C<2.2) && wantSelf;
+  let out='';
+  if(wantSelf){
+    out+=`<p>В ваших ответах люди заявлены как <b>соавторы</b>, а смысл и прибыль — как единый контур. Это ценностная позиция владельца Созвездия. `;
+    if(conflictC1){
+      out+=`<span class="conflict">Но фактический режим конвертации (C ≈ ${fmtCoord(G.C)}) ближе к подавлению/игнорированию. Это главный разрыв: декларируемая ценность соавторства не подкреплена реальным правом на инициирование и пересборкой ролей. Пока артефакты власти удерживают C1–C2, целевое Созвездие останется лозунгом.</span>`;
+    } else {
+      out+=`Фактический профиль (C ≈ ${fmtCoord(G.C)}) ${G.C>=3?'согласуется с этой ценностью — у вас есть база для движения к флагманскому типу.':'пока отстаёт от ценности — разрыв закрывается передачей права на инициирование и переходом от замены к пересборке ролей.'}`;
+    }
+    out+='</p>';
+  } else {
+    out+=`<p>В ваших ответах люди — это скорее <b>ресурс/таланты для задач</b>, а смысл «вторичен после результата». Это честная и работоспособная позиция владельца Кузницы. Важно понимать её цену: такой режим выжигает носителей и уязвим к «потере души» при росте. Движение к Созвездию имеет смысл только если вы лично готовы держать смысл и прибыль в одном контуре — иначе целиться в C4 не нужно.</p>`;
+  }
+  if(fear){
+    out+=`<p>Вы отметили близость страха «<b>потерять душу при масштабировании</b>». В методологии ЯВЬ это флагманский триггер: именно он чаще всего приводит собственника к осознанной трансформации в сторону Самораскрытия. Этот страх — не слабость, а точный индикатор того, что у компании есть «душа», которую стоит институционализировать прежде, чем рост её размоет.</p>`;
+  }
+  return out;
+}
+
+/* ---------- Roadmap derivation ---------- */
+function deriveRoadmap(G,ctx,domKey){
+  const A=G.A??2,B=G.B??2,C=G.C??2;
+  const toForge = ['monolith','pyramid','archive','swell'].includes(G.cls.dom.key);
+  const routeLine = toForge
+    ? `${G.cls.dom.name} → Кузница → Созвездие (через базовый лагерь)`
+    : (G.cls.dom.key==='forge' ? 'Кузница → Созвездие (переключение C3→C4)' : 'удержание и углубление Созвездия');
+
+  const H1={when:'0–6 мес',title:'Quick wins',items:[]};
+  const H2={when:'6–18 мес',title:'Среднесрочные',items:[]};
+  const H3={when:'18–36 мес',title:'Стратегические',items:[]};
+
+  // Ось B — почти всегда первый рычаг
+  if(B<3){
+    H1.items.push({axis:'B',task:'Запустить институциональный маршрут «идея → рабочая группа → тест» для уровней N-2/N-3.',kpi:'initiation latency < 30 дней'});
+    H2.items.push({axis:'B',task:'Делегировать право инициировать по зонам (распределённая лицензия B3); ввести разбор «ошибки бездействия».',kpi:'initiation depth опускается на 2 грейда'});
+  } else {
+    H2.items.push({axis:'B',task:'Институционализировать презумпцию лидерства: «Лидер на задаче» в каждой постановке.',kpi:'неинициирование требует объяснения в 80% задач'});
+  }
+  // Ось A
+  if(A<3){
+    H1.items.push({axis:'A',task:'Сместить апелляцию в спорах со статуса/регламента на продукт и данные.',kpi:'доля апелляций «продукт/данные» > 50%'});
+    H3.items.push({axis:'A',task:'Достроить смысловую координацию (A4): разделённый смысл сверх продукта в ревью и протоколах.',kpi:'authorship фиксируется в протоколах'});
+  } else if(A<3.6){
+    H2.items.push({axis:'A',task:'Перейти от продукта-якоря к разделённому смыслу (A3→A4); вопросы «что здесь твоё?» в ревью.',kpi:'смысловые вопросы операционализированы'});
+  }
+  // Ось C — ядро
+  if(C<2.5){
+    H1.items.push({axis:'C',task:'Прекратить наказание инициативы; начать замечать авторство конкретных людей в итогах.',kpi:'authorship index растёт квартал к кварталу'});
+    H2.items.push({axis:'C',task:'Поднять personalization ratio: собирать роли вокруг сильных сторон, а не слотов.',kpi:'≥30% ключевых ролей под людей'});
+  }
+  if(C>=2.5&&C<3.4){
+    H2.items.push({axis:'C',task:'Главный шаг: переключить «замену» выгоревшего на «пересборку роли» (C3→C4).',kpi:'документированные кейсы пересборки роли'});
+    H3.items.push({axis:'C',task:'Ввести двойную метрику: самореализация людей рядом с прибылью, в одном контуре.',kpi:'обе метрики на одном дашборде'});
+  }
+  if(C>=3.4){
+    H3.items.push({axis:'C',task:'Удерживать Созвездие: защита от карго-культа и терапевтизации, двухконтурный онбординг.',kpi:'PCI не снижается замер к замеру'});
+  }
+  // dispersion
+  if(G.isthmus||G.dispersion>=0.42){
+    H1.items.push({axis:'B',task:'Посегментная диагностика: явно описать контуры «двух компаний» и стык между ними.',kpi:'карта контуров согласована топ-командой'});
+  }
+  // guarantee non-empty
+  if(!H1.items.length) H1.items.push({axis:'C',task:'Закрепить сильные практики раскрытия как стандарт онбординга и ревью.',kpi:'практики задокументированы'});
+  if(!H3.items.length) H3.items.push({axis:'A',task:'Институционализировать смысловую координацию как защиту от деградации при росте.',kpi:'PCI стабилен при масштабировании'});
+
+  return {routeLine, horizons:[H1,H2,H3]};
+}
+
+/* ============================================================
+   ВИЗУАЛИЗАЦИИ (чистый SVG — надёжно для печати)
+   ============================================================ */
+function svgEl(tag,attrs){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+
+/* 2.5D изометрическая проекция куба A·B·C */
+function drawProjection(G){
+  const svg=document.getElementById('svgProj'); if(!svg)return; svg.innerHTML='';
+  const ox=250,oy=300,s=70; // origin & scale
+  // изометрия: A→право-вверх, B→лево-вверх, C→вверх
+  function P(a,b,c){ // a,b,c in 1..4 → 0..3
+    a-=1;b-=1;c-=1;
+    const x=ox + (a*0.86 - b*0.86)*s/1;
+    const y=oy - (a*0.5 + b*0.5)*s/1 - c*s*0.92;
+    return [x,y];
+  }
+  // grid floor (C=1 plane)
+  for(let a=1;a<=4;a++){const p1=P(a,1,1),p2=P(a,4,1);svg.appendChild(svgEl('line',{x1:p1[0],y1:p1[1],x2:p2[0],y2:p2[1],stroke:'#e7ebf3','stroke-width':1}));}
+  for(let b=1;b<=4;b++){const p1=P(1,b,1),p2=P(4,b,1);svg.appendChild(svgEl('line',{x1:p1[0],y1:p1[1],x2:p2[0],y2:p2[1],stroke:'#e7ebf3','stroke-width':1}));}
+  // axes labels
+  const la=P(4,1,1),lb=P(1,4,1),lc=P(1,1,4);
+  [['A · координация',la,'var(--indigo)'],['B · власть',lb,'var(--indigo)'],['C · конвертация',lc,'var(--indigo)']].forEach(([t,p])=>{
+    const tx=svgEl('text',{x:p[0]+(t[0]==='A'?12:t[0]==='B'?-12:0),y:p[1]+(t[0]==='C'?-8:14),'font-size':12,fill:'#5A6478','text-anchor':t[0]==='B'?'end':'start','font-weight':600});tx.textContent=t;svg.appendChild(tx);
+  });
+  // centroids
+  CENTROIDS.forEach(c=>{
+    const p=P(...c.coord);
+    const isConst=c.key==='constell';
+    svg.appendChild(svgEl('circle',{cx:p[0],cy:p[1],r:isConst?7:5,fill:isConst?'var(--gold)':'#aab2c6',stroke:'#fff','stroke-width':1.5,opacity:isConst?1:.85}));
+    const tx=svgEl('text',{x:p[0]+9,y:p[1]+4,'font-size':11,'font-weight':isConst?700:500,fill:isConst?'#a9781f':'#8A92A6'});
+    tx.textContent=c.name;svg.appendChild(tx);
+  });
+  // company point
+  const cp=P(G.coord[0],G.coord[1],G.coord[2]);
+  // degradation vector → shadow
+  const sp=P(...G.cls.shadow.coord);
+  svg.appendChild(arrow(cp,sp,'var(--c1)'));
+  // target vector → constellation
+  const gp=P(4,4,4);
+  svg.appendChild(arrow(cp,gp,'var(--c4)',true));
+  // company marker (pulsing star)
+  svg.appendChild(svgEl('circle',{cx:cp[0],cy:cp[1],r:13,fill:'var(--gold)',opacity:.18}));
+  svg.appendChild(svgEl('circle',{cx:cp[0],cy:cp[1],r:7,fill:'var(--gold)',stroke:'#fff','stroke-width':2}));
+  const ct=svgEl('text',{x:cp[0],y:cp[1]-16,'font-size':12,fill:'#a9781f','font-weight':700,'text-anchor':'middle'});ct.textContent='вы здесь';svg.appendChild(ct);
+}
+function arrow(p1,p2,color,dashed){
+  const g=svgEl('g',{});
+  const dx=p2[0]-p1[0],dy=p2[1]-p1[1],len=Math.hypot(dx,dy);
+  if(len<1)return g;
+  const ux=dx/len,uy=dy/len;
+  const ex=p1[0]+ux*(len-14),ey=p1[1]+uy*(len-14); // stop short
+  const ln=svgEl('line',{x1:p1[0],y1:p1[1],x2:ex,y2:ey,stroke:color,'stroke-width':2.2,opacity:.8});
+  if(dashed)ln.setAttribute('stroke-dasharray','5 4');
+  g.appendChild(ln);
+  const ah=10,a1=Math.atan2(uy,ux);
+  const pA=[ex,ey],pB=[ex-ah*Math.cos(a1-.4),ey-ah*Math.sin(a1-.4)],pC=[ex-ah*Math.cos(a1+.4),ey-ah*Math.sin(a1+.4)];
+  g.appendChild(svgEl('polygon',{points:`${pA[0]},${pA[1]} ${pB[0]},${pB[1]} ${pC[0]},${pC[1]}`,fill:color,opacity:.85}));
+  return g;
+}
+
+/* радар по 3 осям */
+function drawRadar(G){
+  const svg=document.getElementById('svgRadar'); if(!svg)return; svg.innerHTML='';
+  const cx=230,cy=200,R=130;
+  const axes=[{k:'A',label:'A · координация',ang:-90},{k:'B',label:'B · власть',ang:30},{k:'C',label:'C · конвертация',ang:150}];
+  // rings
+  for(let r=1;r<=4;r++){
+    const pts=axes.map(a=>{const rad=(a.ang)*Math.PI/180,rr=R*(r/4);return [cx+rr*Math.cos(rad),cy+rr*Math.sin(rad)];});
+    svg.appendChild(svgEl('polygon',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#e7ebf3','stroke-width':1}));
+  }
+  axes.forEach(a=>{
+    const rad=a.ang*Math.PI/180;
+    const ex=cx+R*Math.cos(rad),ey=cy+R*Math.sin(rad);
+    svg.appendChild(svgEl('line',{x1:cx,y1:cy,x2:ex,y2:ey,stroke:'#d4dae6','stroke-width':1}));
+    const lx=cx+(R+24)*Math.cos(rad),ly=cy+(R+24)*Math.sin(rad);
+    const t=svgEl('text',{x:lx,y:ly,'font-size':12,fill:'#5A6478','font-weight':600,'text-anchor':'middle'});t.textContent=a.label;svg.appendChild(t);
+  });
+  // target polygon (constellation = all 4)
+  const tgt=axes.map(a=>{const rad=a.ang*Math.PI/180,rr=R;return [cx+rr*Math.cos(rad),cy+rr*Math.sin(rad)];});
+  svg.appendChild(svgEl('polygon',{points:tgt.map(p=>p.join(',')).join(' '),fill:'rgba(21,101,192,.10)',stroke:'rgba(21,101,192,.5)','stroke-width':1.5,'stroke-dasharray':'5 4'}));
+  // current polygon
+  const cur=axes.map(a=>{const val=G[a.k]??1;const rad=a.ang*Math.PI/180,rr=R*((val-0)/4);return [cx+rr*Math.cos(rad),cy+rr*Math.sin(rad)];});
+  svg.appendChild(svgEl('polygon',{points:cur.map(p=>p.join(',')).join(' '),fill:'rgba(197,151,58,.22)',stroke:'var(--gold)','stroke-width':2.5}));
+  cur.forEach((p,i)=>{svg.appendChild(svgEl('circle',{cx:p[0],cy:p[1],r:4,fill:'var(--gold)',stroke:'#fff','stroke-width':1.5}));
+    const v=G[axes[i].k]; const t=svgEl('text',{x:p[0],y:p[1]-9,'font-size':11,fill:'#a9781f','font-weight':700,'text-anchor':'middle'});t.textContent=v===null?'—':v.toFixed(1);svg.appendChild(t);});
+}
+
+/* heatmap по респондентам/осям */
+function drawHeatmap(G){
+  const svg=document.getElementById('svgHeat'); if(!svg)return; svg.innerHTML='';
+  const cols=['A','B','C'], colX=[260,380,500], rowH=42, top=60, labelX=30;
+  // header
+  cols.forEach((c,i)=>{const t=svgEl('text',{x:colX[i]+28,y:40,'font-size':13,fill:'#1B2233','font-weight':700,'text-anchor':'middle'});t.textContent='Ось '+c;svg.appendChild(t);});
+  const tt=svgEl('text',{x:labelX,y:40,'font-size':12,fill:'#8A92A6','font-weight':600});tt.textContent='Участник';svg.appendChild(tt);
+  function color(v){if(v===null)return'#eef1f6';
+    // 1..4 → c1..c4 gradient
+    const stops=[[229,57,53],[255,167,38],[67,160,71],[21,101,192]];
+    const t=clamp((v-1)/3,0,1);const seg=t*3,i=Math.min(2,Math.floor(seg)),f=seg-i;
+    const a=stops[i],b=stops[i+1];const r=Math.round(a[0]+(b[0]-a[0])*f),g=Math.round(a[1]+(b[1]-a[1])*f),bl=Math.round(a[2]+(b[2]-a[2])*f);
+    return `rgb(${r},${g},${bl})`;}
+  STATE.respondents.forEach((resp,ri)=>{
+    const s=scoreRespondent(resp);
+    const y=top+ri*rowH;
+    const nm=svgEl('text',{x:labelX,y:y+27,'font-size':12.5,fill:'#1B2233','font-weight':600});nm.textContent=(resp.name)+(resp.role?' · '+shortRole(resp.role):'');svg.appendChild(nm);
+    cols.forEach((c,ci)=>{
+      const v=s[c];
+      svg.appendChild(svgEl('rect',{x:colX[ci],y:y+6,width:56,height:30,rx:6,fill:color(v),opacity:v===null?.4:.9}));
+      const t=svgEl('text',{x:colX[ci]+28,y:y+26,'font-size':12,fill:'#fff','font-weight':700,'text-anchor':'middle'});t.textContent=v===null?'—':v.toFixed(1);svg.appendChild(t);
+    });
+  });
+  // aggregate row
+  const y=top+STATE.respondents.length*rowH+6;
+  svg.appendChild(svgEl('line',{x1:labelX,y1:y,x2:560,y2:y,stroke:'#d4dae6','stroke-width':1}));
+  const am=svgEl('text',{x:labelX,y:y+27,'font-size':12.5,fill:'#a9781f','font-weight':800});am.textContent='Агрегат (медиана)';svg.appendChild(am);
+  [G.A,G.B,G.C].forEach((v,ci)=>{
+    svg.appendChild(svgEl('rect',{x:colX[ci],y:y+8,width:56,height:30,rx:6,fill:'none',stroke:'var(--gold)','stroke-width':2}));
+    const t=svgEl('text',{x:colX[ci]+28,y:y+28,'font-size':12.5,fill:'#a9781f','font-weight':800,'text-anchor':'middle'});t.textContent=v===null?'—':v.toFixed(1);svg.appendChild(t);
+  });
+}
+function shortRole(r){return r.replace('Генеральный директор','CEO').replace(' / собственник','').slice(0,22);}
+
+/* ---------- Старт: ссылка на отчёт или продолжение ---------- */
+(function initYav(){
+  const h=(location.hash||'').slice(1);
+  if(h.indexOf('r1-')===0){ const rs=parseCodes(h); if(rs.length){ STATE.fromLink=true; if(rs.length>1) rs.forEach((r,i)=>{r.name='Участник '+(i+1);}); showReportFor(rs); return; } }
+  const s=loadProgress(); const rb=document.getElementById('resumeBtn');
+  if(s&&rb){ rb.hidden=false; rb.textContent='Продолжить с блока '+(s.blockIndex||0)+' →'; }
+})();
+</script>
+</body></html>
